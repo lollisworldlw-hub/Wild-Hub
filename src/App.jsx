@@ -4272,15 +4272,25 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     });
   };
 
+  // Per-time availability: how many players can play each time.
+  // A multi-time sign-up counts toward every time it lists; "Any" counts toward all times.
   const getPieData = (signups) => {
     const total = signups.length || 1;
-    const groups = {};
-    signups.forEach(sg => { const label = timePrefLabel(sg.timePreference, offeredTimes); groups[label] = (groups[label] || 0) + 1; });
-    const palette = ["var(--blue)", "var(--purple)", "var(--green)", "var(--red)", "var(--gold-light)", "var(--text-dim)"];
-    return Object.entries(groups)
-      .sort(([a], [b]) => (a === "Any time" ? -1 : b === "Any time" ? 1 : a.localeCompare(b)))
-      .map(([label, count], i) => ({ label: label === "Any time" ? "Any" : label, count, pct: Math.round(count / total * 100),
-        color: label === "Any time" ? "var(--gold)" : palette[i % palette.length] }));
+    const counts = {};
+    let anyCount = 0;
+    offeredTimes.forEach(t => { counts[t] = 0; });
+    signups.forEach(sg => {
+      if (isAnyTime(sg.timePreference, offeredTimes)) {
+        anyCount++;
+        if (offeredTimes.length) offeredTimes.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+        return;
+      }
+      parseTimePref(sg.timePreference, offeredTimes).forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+    });
+    const palette = ["var(--purple)", "var(--red)", "var(--blue)", "var(--green)", "var(--gold-light)", "var(--text-dim)"];
+    const rows = Object.keys(counts).sort((a, b) => a.localeCompare(b))
+      .map((label, i) => ({ label, count: counts[label], pct: Math.round(counts[label] / total * 100), color: palette[i % palette.length] }));
+    return { rows, anyCount, total: signups.length };
   };
 
   const assign = (userId, key, value) => setAssignments(a => ({ ...a, [userId]: { ...(a[userId]||{}), [key]: value } }));
@@ -4478,32 +4488,31 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
         </div>
       </div>
 
-      {/* Time slot distribution — compact filled pie (always counts ALL sign-ups, not search results) */}
-      {(tab === "canyon" ? csSignups : dsSignups).length > 0 && (() => {
-        let acc = 0;
-        const pieTotal = pieData.reduce((n, d) => n + d.count, 0) || 1;
-        const stops = pieData.map(d => { const from = acc; acc += d.count / pieTotal * 100; return `${d.color} ${from}% ${acc}%`; }).join(", ");
-        return (
-          <div className="card" style={{marginBottom:12}}>
-            <div style={{padding:"10px 14px"}}>
-              <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8, fontSize:13}}>
-                <span style={{fontWeight:600}}>⏰ Time Slots</span>
-                <span style={{color:"var(--text-dim)"}}>Total: <strong style={{color:"var(--text)"}}>{pieTotal}</strong></span>
-              </div>
-              <div style={{display:"flex", alignItems:"center", gap:14}}>
-                <div role="img" aria-label="Time slot distribution" style={{width:56, height:56, borderRadius:"50%", flexShrink:0, background:`conic-gradient(${stops})`}} />
-                <div style={{display:"flex", flexDirection:"column", gap:3, fontSize:12}}>
-                  {pieData.map((d,i)=>(
-                    <span key={i} style={{display:"inline-flex", alignItems:"center", gap:5, whiteSpace:"nowrap"}}>
-                      <span className="pie-dot" style={{background:d.color, width:9, height:9, flexShrink:0}} />{d.label}: <strong>{d.count}</strong> <span style={{color:"var(--text-dim)"}}>({d.pct}%)</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
+      {/* Time slot availability — players available per time (always ALL sign-ups, not search results) */}
+      {(tab === "canyon" ? csSignups : dsSignups).length > 0 && (
+        <div className="card" style={{marginBottom:12}}>
+          <div style={{padding:"10px 14px"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8, fontSize:13}}>
+              <span style={{fontWeight:600}}>⏰ Time Slots</span>
+              <span style={{color:"var(--text-dim)"}}>Total: <strong style={{color:"var(--text)"}}>{pieData.total}</strong></span>
             </div>
+            <div style={{display:"flex", flexDirection:"column", gap:6, fontSize:13}}>
+              {pieData.rows.map(d => (
+                <div key={d.label} style={{display:"grid", gridTemplateColumns:"52px 1fr auto", alignItems:"center", gap:8}}>
+                  <span style={{fontWeight:600}}>{d.label}</span>
+                  <div style={{height:10, borderRadius:5, background:"var(--border)", overflow:"hidden"}}>
+                    <div style={{width:`${d.pct}%`, height:"100%", background:d.color, borderRadius:5}} />
+                  </div>
+                  <span style={{whiteSpace:"nowrap"}}><strong>{d.count}</strong> <span style={{color:"var(--text-dim)"}}>({d.pct}%)</span></span>
+                </div>
+              ))}
+            </div>
+            {pieData.anyCount > 0 && (
+              <div style={{marginTop:8, fontSize:11, color:"var(--text-dim)"}}>Includes {pieData.anyCount} “Any” sign-up{pieData.anyCount === 1 ? "" : "s"} in every time. Players who picked two times count in both.</div>
+            )}
           </div>
-        );
-      })()}
+        </div>
+      )}
 
       {settingsOpen && <StormSettingsModal type={tab} showToast={showToast} onClose={() => setSettingsOpen(false)}
         isAdmin={isAdmin} seasonActive={stormSettings?.[`${tab}_active`] ?? true} onToggleSeason={() => toggleSeasonActive(tab)} />}
