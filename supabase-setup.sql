@@ -175,3 +175,15 @@ end $$;
 -- Deletes need the old row's details for live updates to remove it on screen
 alter table public.canyon_signups replica identity full;
 alter table public.desert_signups replica identity full;
+
+-- ─── AUTO-TRANSLATE ─────────────────────────────────────────────────────────
+-- Saved DeepL translations of text people type (battle plans, train goals).
+-- Only the "translate" Edge Function reads and writes this table (RLS on, no policies).
+create table if not exists translations (
+  key         text primary key,          -- sha256 of language + source text
+  lang        text not null,
+  source      text not null,
+  translated  text not null,
+  created_at  timestamptz default now()
+);
+alter table translations enable row level security;

@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "./supabase.js";
+import { tr, setI18nLang, dateLocale } from "./i18n/index.js";
+import { useAutoTranslate } from "./i18n/auto.js";
+
+// tr() for text with bold parts: "Tap <b>Add</b>" → ["Tap ", <strong>Add</strong>]
+const trRich = (text, vars) => tr(text, vars).split(/<b>(.*?)<\/b>/).map((part, i) => i % 2 ? <strong key={i}>{part}</strong> : part);
 
 // Logo lives in /public so it is served at the site root
 const LOGO_SRC = "/wild-logo.jpg";        // square icon
@@ -101,6 +106,101 @@ const T = {
     pastPolls: "Past Polls",
     pollVotes: "votes",
     pollComments: "Comments",
+  },
+  de: {
+    appName: "WiLD Hub", alliance: "WiLD",
+    login: "Anmelden", signup: "Konto erstellen", username: "Spielname",
+    password: "Passwort", confirmPassword: "Passwort bestätigen",
+    securityQuestion: "Sicherheitsfrage", securityAnswer: "Deine Antwort",
+    createAccount: "Konto erstellen", signIn: "Anmelden",
+    forgotPassword: "Passwort vergessen?", recover: "Konto wiederherstellen",
+    home: "Start", events: "Events", battlePlans: "Schlachtpläne",
+    profile: "Profil", admin: "Verwaltung", suggestions: "Vorschläge",
+    contests: "Wettbewerbe", logout: "Abmelden",
+    canyonStorm: "Canyon Storm", desertStorm: "Desert Storm",
+    signUp: "Anmelden", signedUp: "Angemeldet ✓", notSignedUp: "Jetzt anmelden",
+    editSignup: "Bearbeiten", revokeSignup: "Zurückziehen",
+    squadPower: "Truppenstärke", squadType: "Truppentyp",
+    availability: "Verfügbarkeit", timePreference: "Wunschzeit",
+    confirmed: "Ja, ich bin dabei", sub: "Als Ersatz anmelden",
+    cantMake: "Sorry, ich kann nicht",
+    eitherTime: "Beide Zeiten passen", time12: "12:00 Serverzeit",
+    time23: "23:00 Serverzeit (1 Std. vor dem Reset)",
+    submit: "Senden", cancel: "Abbrechen", save: "Speichern",
+    announcements: "Ankündigungen", more: "Mehr anzeigen",
+    buddySystem: "Buddy-System", myBuddy: "Mein Buddy",
+    noBuddy: "Kein Buddy zugeteilt", requestBuddy: "Buddy anfragen",
+    engineer: "Ingenieur", warLeader: "Kriegsführer",
+    upcomingEvents: "Anstehende Events", noEvents: "Keine anstehenden Events",
+    memberSince: "Mitglied seit", role: "Rolle",
+    language: "Sprache", profession: "Beruf",
+    editProfile: "Profil bearbeiten", changePassword: "Passwort ändern",
+    memberId: "Mitglieds-ID", powerHistory: "Stärkeverlauf",
+    signupFrequency: "Anmeldehäufigkeit", attendance: "Teilnahme",
+    teamBuilder: "Team-Einteilung", teamA: "Team A", teamB: "Team B",
+    starter: "Stammspieler", subRole: "Ersatz", floater: "Floater",
+    exportCSV: "CSV exportieren", copyClipboard: "In die Zwischenablage kopieren",
+    approveMembers: "Offene Freigaben", approve: "Freigeben", deny: "Ablehnen",
+    makeAnnouncement: "Neue Ankündigung", duration: "Dauer",
+    buddyManagement: "Buddy-Verwaltung", addBuddy: "Buddys verbinden",
+    contestManagement: "Wettbewerbe", newContest: "Neuer Wettbewerb",
+    contestName: "Name des Wettbewerbs", maxUploads: "Max. Uploads / Mitglied",
+    maxVotes: "Max. Stimmen / Mitglied", publish: "Veröffentlichen",
+    vote: "Abstimmen", voted: "Abgestimmt", upload: "Foto hochladen",
+    closesIn: "Endet in", anonymous: "Anonym senden",
+    suggestionPlaceholder: "Teile deine Gedanken, Ideen oder dein Feedback …",
+    birthday: "Geburtstag", birthdayComingUp: "Bald Geburtstag!",
+    pendingApproval: "Dein Konto wartet auf Freigabe.",
+    welcomeBack: "Willkommen zurück",
+    airType: "Luft", tankType: "Panzer", missileType: "Rakete",
+    resetPassword: "Passwort zurücksetzen", newPassword: "Neues Passwort",
+    memberManagement: "Mitgliederverwaltung",
+    dataTracking: "Daten & Auswertung",
+    plans: "Pläne",
+    stormSignups: "Storm-Anmeldungen",
+    activeContest: "Aktiver Wettbewerb",
+    yourAssignment: "Deine Einteilung",
+    battleTime: "Schlachtzeit",
+    battlePlanStrategy: "Schlachtplan & Strategie",
+    battleMap: "Schlachtkarte",
+    tapToEnlarge: "zum Vergrößern tippen",
+    notesReminders: "Hinweise & Erinnerungen",
+    profileInfo: "Profilinfos",
+    postedBy: "Gepostet von",
+    expires: "Läuft ab",
+    pendingApprovals2: "Wartet auf Freigabe",
+    allMembers: "Alle Mitglieder",
+    allAnnouncements: "Alle Ankündigungen",
+    postAnnouncement: "Ankündigung posten",
+    buddyRequests: "Buddy-Anfragen",
+    allContests: "Alle Wettbewerbe",
+    allEvents: "Alle Events",
+    memberFeedback: "Feedback der Mitglieder",
+    memberBirthdays: "Geburtstage der Mitglieder",
+    battleHistory: "Schlachtverlauf",
+    startsIn: "Beginnt in",
+    serverTime: "Serverzeit",
+    noAssignment: "Noch keine Einteilung. Schau wieder vorbei, wenn die Teams feststehen.",
+    upcomingBattles: "Deine anstehenden Schlachten und Allianz-Events",
+    assignmentsStrategy: "Deine Einteilung und Schlachtstrategie",
+    feedbackDesc: "Teile deine Ideen, dein Feedback oder deine Bedenken mit der Führung.",
+    activeContests: "Aktive Allianz-Wettbewerbe",
+    polls: "Umfragen",
+    activePoll: "Aktive Umfrage",
+    pollResults: "Umfrageergebnisse",
+    createPoll: "Umfrage erstellen",
+    pollQuestion: "Frage",
+    pollOptions: "Optionen",
+    pollExpires: "Läuft ab",
+    addOption: "Option hinzufügen",
+    publishPoll: "Umfrage veröffentlichen",
+    castVote: "Stimme abgeben",
+    voteNow: "Jetzt abstimmen",
+    pollClosed: "Umfrage beendet",
+    noPollsYet: "Noch keine Umfragen",
+    pastPolls: "Vergangene Umfragen",
+    pollVotes: "Stimmen",
+    pollComments: "Kommentare",
   },
   it: {
     appName: "WiLD Hub", alliance: "WiLD",
@@ -488,6 +588,20 @@ const MOCK_MEMBERS = [];
 
 const MOCK_POWER_HISTORY = {};
 
+// Language choices for sign-up and the profile page
+const LANGUAGE_OPTIONS = [["en", "English"], ["de", "Deutsch"], ["it", "Italiano"], ["fr", "Français"], ["sv", "Svenska"], ["tr", "Türkçe"]];
+
+// Squad types are saved in English; shown with tr()
+const SQUAD_TYPES = ["Air", "Tank", "Missile"];
+// Sign-up availability value → label
+const availLabel = (v) => ({ confirmed: tr("Confirmed"), sub: tr("Sub"), cantMake: tr("Can't make it") }[v] || v);
+
+// Team role value → label
+const slotRoleLabel = (r) => ({ starter: tr("Starter"), sub: tr("Sub") }[r] || r);
+// Member role value → label
+const roleLabel = (r) => ({ member: tr("Member"), r4: "R4", admin: tr("Admin") }[r] || r);
+
+// Saved in English; shown with tr()
 const SECURITY_QUESTIONS = [
   "What was your first unit trained?",
   "What is your favorite hero?",
@@ -576,7 +690,7 @@ const isAnyTime = (pref, offered = []) => {
   return offered.length > 0 && offered.every(o => picked.includes(o));
 };
 const timePrefLabel = (pref, offered = [], short = false) => {
-  if (isAnyTime(pref, offered)) return short ? "Any" : "Any time";
+  if (isAnyTime(pref, offered)) return short ? tr("Any") : tr("Any time");
   const list = parseTimePref(pref, offered);
   if (!list.length) return "—";
   return short ? list.map(x => x.replace(/:00$/, "")).join("/") : list.join(" / ");
@@ -616,12 +730,12 @@ const formatDate = (date) => {
     ? new Date(date + "T12:00:00Z")
     : new Date(new Date(date).getTime() - SERVER_UTC_OFFSET_HOURS * 3600000);
   if (isNaN(d)) return "—";
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  return d.toLocaleDateString(dateLocale(), { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 };
 
 const timeUntil = (date) => {
   const diff = new Date(date) - Date.now();
-  if (diff <= 0) return "Closed";
+  if (diff <= 0) return tr("Closed");
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
@@ -807,13 +921,13 @@ body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--te
 .check-box { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; font-weight: 700; color: white; transition: all 0.2s; }
 .radio-option.selected .check-box { border-color: var(--gold); background: var(--gold); }
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.storm-actions { display: flex; align-items: center; gap: 6px; }
+.storm-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .count-pills { display: flex; gap: 5px; margin-bottom: 12px; align-items: center; flex-wrap: nowrap; overflow-x: auto; }
 .count-pills .badge { font-size: 11px; padding: 3px 8px; white-space: nowrap; flex-shrink: 0; }
 .sticky-counts { position: sticky; top: 60px; z-index: 50; background: var(--bg); margin: 0 -20px 8px; padding: 8px 20px; border-bottom: 1px solid var(--border); }
 .storm-actions .btn-sm { padding: 6px 10px; font-size: 12px; gap: 4px; flex-shrink: 0; }
 .storm-actions .storm-gear { flex-shrink: 0; font-size: 16px; padding: 4px 10px; }
-.storm-actions .storm-search { flex: 1; min-width: 0; height: 32px; padding: 0 10px; font-size: 13px; border-radius: 8px; }
+.storm-actions .storm-search { flex: 1; min-width: 64px; height: 32px; padding: 0 10px; font-size: 13px; border-radius: 8px; }
 .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; border: 1.5px solid var(--gold); background: var(--gold-pale); color: var(--text); font-size: 13px; font-weight: 600; }
 .chip button { background: none; border: none; color: var(--red); font-weight: 700; cursor: pointer; padding: 0; font-size: 13px; line-height: 1; }
 @media (min-width: 640px) { .sticky-counts { margin: 0 -32px 8px; padding: 8px 32px; } }
@@ -1014,8 +1128,8 @@ function DSGrowthChart({ user, dsSignups }) {
       ctx.beginPath(); ctx.arc(pt[0],pt[1],4,0,Math.PI*2); ctx.fillStyle="#D9A441"; ctx.fill();
     });
     ctx.font = "bold 13px Arial"; ctx.fillStyle = "#D9A441"; ctx.textAlign = "left";
-    ctx.fillText("SQUAD POWER GROWTH", 20, 28);
-    ctx.font = "11px Arial"; ctx.fillStyle = "#7A8A9A"; ctx.fillText("Desert Storm Historical", 20, 44);
+    ctx.fillText(tr("SQUAD POWER GROWTH"), 20, 28);
+    ctx.font = "11px Arial"; ctx.fillStyle = "#7A8A9A"; ctx.fillText(tr("Desert Storm Historical"), 20, 44);
     var PAD_L=64,PAD_R=20,PAD_T=58,PAD_B=52,CW=W-PAD_L-PAD_R,CH=H-PAD_T-PAD_B;
     var powers = myHistory.map(function(h){return h.power;});
     var maxP=Math.max.apply(null,powers), minP=Math.min.apply(null,powers);
@@ -1066,23 +1180,23 @@ function DSGrowthChart({ user, dsSignups }) {
     ctx.font="bold 11px Arial"; ctx.fillStyle="#D9A441"; ctx.textAlign="left";
     ctx.fillText(user.username.toUpperCase(),20,H-14);
     ctx.font="bold 10px Arial"; ctx.fillStyle="#3A4A5A"; ctx.textAlign="right";
-    ctx.fillText("WiLD | GROWTH CHART",W-20,H-14);
+    ctx.fillText("WiLD | " + tr("GROWTH CHART"),W-20,H-14);
     ctx.beginPath(); ctx.strokeStyle="rgba(200,146,42,0.3)"; ctx.lineWidth=1;
     ctx.moveTo(20,H-24); ctx.lineTo(W-20,H-24); ctx.stroke();
   }, [myHistory.length]);
 
   if(myHistory.length===0) return (
     <div className="card" style={{marginBottom:16}}>
-      <div className="card-header"><div className="card-title">📈 Squad Growth History</div></div>
-      <div className="card-body" style={{textAlign:"center",color:"var(--text-dim)",fontSize:13}}>No sign-up history with power data yet.</div>
+      <div className="card-header"><div className="card-title">📈 {tr("Squad Growth History")}</div></div>
+      <div className="card-body" style={{textAlign:"center",color:"var(--text-dim)",fontSize:13}}>{tr("No sign-up history with power data yet.")}</div>
     </div>
   );
 
   return (
     <div className="card" style={{marginBottom:16}}>
       <div className="card-header">
-        <div className="card-title">📈 Squad Growth History</div>
-        <button onClick={download} className="btn btn-sm btn-secondary" style={{fontSize:11,padding:"4px 10px"}}>⬇️ Save PNG</button>
+        <div className="card-title">📈 {tr("Squad Growth History")}</div>
+        <button onClick={download} className="btn btn-sm btn-secondary" style={{fontSize:11,padding:"4px 10px"}}>⬇️ {tr("Save PNG")}</button>
       </div>
       <div className="card-body" style={{padding:"12px"}}>
         <canvas ref={canvasRef} width={600} height={300} style={{width:"100%",borderRadius:8,display:"block"}}/>
@@ -1094,16 +1208,16 @@ function DSGrowthChart({ user, dsSignups }) {
             borderRadius:8, cursor:"pointer", fontSize:12, fontWeight:600, color:"var(--text-mid)",
           }}
         >
-          <span>📋 {myHistory.length} week{myHistory.length === 1 ? "" : "s"} logged</span>
-          <span style={{color:"var(--gold)"}}>{showHistory ? "▲ Hide" : "▼ Show"}</span>
+          <span>📋 {myHistory.length === 1 ? tr("1 week logged") : tr("{n} weeks logged", { n: myHistory.length })}</span>
+          <span style={{color:"var(--gold)"}}>{showHistory ? "▲ " + tr("Hide") : "▼ " + tr("Show")}</span>
         </button>
         {showHistory && (
           <div style={{marginTop:8, maxHeight:220, overflowY:"auto", border:"1px solid var(--border)", borderRadius:8}}>
             <table style={{width:"100%", borderCollapse:"collapse", fontSize:12}}>
               <thead>
                 <tr style={{position:"sticky", top:0, background:"var(--surface2)"}}>
-                  <th style={{textAlign:"left", padding:"6px 10px", color:"var(--text-dim)", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:0.5}}>Week</th>
-                  <th style={{textAlign:"right", padding:"6px 10px", color:"var(--text-dim)", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:0.5}}>Power</th>
+                  <th style={{textAlign:"left", padding:"6px 10px", color:"var(--text-dim)", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:0.5}}>{tr("Week")}</th>
+                  <th style={{textAlign:"right", padding:"6px 10px", color:"var(--text-dim)", fontWeight:700, fontSize:10, textTransform:"uppercase", letterSpacing:0.5}}>{tr("Power")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1141,14 +1255,14 @@ function MemberCard({ member: memberProp, members, csTeams, dsTeams, csSignups, 
           <div style={{ width: 52, height: 52, borderRadius: "50%", background: "rgba(255,255,255,0.2)", border: "2px solid rgba(255,255,255,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, color: "#fff", flexShrink: 0 }}>{member.username[0].toUpperCase()}</div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>{member.username}</div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)" }}>{member.profession === "engineer" ? "🔧 Engineer" : "⚔️ War Leader"} · {member.role.toUpperCase()}</div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)" }}>{member.profession === "engineer" ? "🔧 " + tr("Engineer") : "⚔️ " + tr("War Leader")} · {member.role.toUpperCase()}</div>
           </div>
           <button onClick={onClose} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: 30, height: 30, color: "#fff", cursor: "pointer", fontSize: 14 }}>✕</button>
         </div>
         <div style={{ padding: 16 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
-            {[["⚡", "Power", member.power ? (member.power/1000000).toFixed(2)+"M" : "—"],
-              ["📅", "Joined", member.joinDate ? new Date(String(member.joinDate).slice(0, 10) + "T12:00:00Z").toLocaleDateString("en-US",{month:"short",year:"2-digit",timeZone:"UTC"}) : "—"]
+            {[["⚡", tr("Power"), member.power ? (member.power/1000000).toFixed(2)+"M" : "—"],
+              ["📅", tr("Joined"), member.joinDate ? new Date(String(member.joinDate).slice(0, 10) + "T12:00:00Z").toLocaleDateString(dateLocale(),{month:"short",year:"2-digit",timeZone:"UTC"}) : "—"]
             ].map(([icon, label, val]) => (
               <div key={label} style={{ background: "var(--bg)", borderRadius: 10, padding: "8px 6px", textAlign: "center" }}>
                 <div style={{ fontSize: 16 }}>{icon}</div>
@@ -1162,19 +1276,19 @@ function MemberCard({ member: memberProp, members, csTeams, dsTeams, csSignups, 
             if (!buddy && !isR4) return null;
             return (
               <div style={{ background: "var(--bg)", borderRadius: 10, padding: "8px 12px", marginBottom: 10, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>🤝 {buddy ? <>Buddy: <strong>{buddy.username}</strong></> : <span style={{ color: "var(--text-dim)" }}>No buddy</span>}</span>
-                {isR4 && <button className="btn btn-sm btn-secondary" style={{ padding: "3px 8px", fontSize: 11, flexShrink: 0 }} onClick={() => setProfOpen(true)}>Profession / buddy</button>}
+                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>🤝 {buddy ? <>{tr("Buddy")}: <strong>{buddy.username}</strong></> : <span style={{ color: "var(--text-dim)" }}>{tr("No buddy")}</span>}</span>
+                {isR4 && <button className="btn btn-sm btn-secondary" style={{ padding: "3px 8px", fontSize: 11, flexShrink: 0 }} onClick={() => setProfOpen(true)}>{tr("Profession / buddy")}</button>}
               </div>
             );
           })()}
           {stats.signedUp > 0 ? (
             <div style={{ background: "var(--bg)", borderRadius: 10, padding: "12px 14px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <span style={{ fontWeight: 700, fontSize: 13 }}>⚔️ Storm Rate</span>
+                <span style={{ fontWeight: 700, fontSize: 13 }}>⚔️ {tr("Storm Rate")}</span>
                 <span style={{ fontSize: 22, fontWeight: 800, color: pctColor }}>{stats.pct}%</span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 6, marginBottom: 8 }}>
-                {[["Signed Up", stats.signedUp, "var(--text)"],["Made It", stats.madeTeam, "var(--green)"],["Waitlist", stats.waitlisted, "var(--gold)"],["Missed", stats.missed, "var(--text-dim)"]].map(([l,v,c]) => (
+                {[[tr("Signed Up"), stats.signedUp, "var(--text)"],[tr("Made It"), stats.madeTeam, "var(--green)"],[tr("Waitlist"), stats.waitlisted, "var(--gold)"],[tr("Missed"), stats.missed, "var(--text-dim)"]].map(([l,v,c]) => (
                   <div key={l} style={{ textAlign: "center" }}>
                     <div style={{ fontSize: 15, fontWeight: 700, color: c }}>{v}</div>
                     <div style={{ fontSize: 9, color: "var(--text-dim)" }}>{l}</div>
@@ -1185,8 +1299,8 @@ function MemberCard({ member: memberProp, members, csTeams, dsTeams, csSignups, 
                 <div style={{ height: "100%", width: stats.pct+"%", background: pctColor, borderRadius: 8 }} />
               </div>
             </div>
-          ) : <div style={{ textAlign: "center", color: "var(--text-dim)", fontSize: 13 }}>No storm history yet.</div>}
-          <button className="btn btn-secondary" style={{width:"100%",marginTop:10,fontSize:13}} onClick={()=>setShowGrowth(true)}>📈 View Squad Growth Chart</button>
+          ) : <div style={{ textAlign: "center", color: "var(--text-dim)", fontSize: 13 }}>{tr("No storm history yet.")}</div>}
+          <button className="btn btn-secondary" style={{width:"100%",marginTop:10,fontSize:13}} onClick={()=>setShowGrowth(true)}>📈 {tr("View Squad Growth Chart")}</button>
         </div>
       </div>
     </div>
@@ -1195,7 +1309,7 @@ function MemberCard({ member: memberProp, members, csTeams, dsTeams, csSignups, 
       <div className="modal-overlay" onClick={()=>setShowGrowth(false)} style={{zIndex:400}}>
         <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:520,padding:0,borderRadius:20,overflow:"hidden",maxHeight:"90vh",overflowY:"auto"}}>
           <div style={{background:"linear-gradient(135deg,var(--gold) 0%,#3A2608 100%)",padding:"14px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <div style={{color:"#fff",fontWeight:800,fontSize:15}}>📈 {member.username} — Squad Growth</div>
+            <div style={{color:"#fff",fontWeight:800,fontSize:15}}>📈 {member.username} — {tr("Squad Growth")}</div>
             <button onClick={()=>setShowGrowth(false)} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:"50%",width:28,height:28,color:"#fff",cursor:"pointer"}}>✕</button>
           </div>
           <div style={{padding:16}}>
@@ -1270,9 +1384,9 @@ export default function App() {
     availability: s.availability, timePreference: s.time_preference, canFlexTime: s.can_flex_time || "", week: s.week_start,
   });
 
-  const mapTrain = (tr) => ({
-    id: tr.id, date: tr.train_date, time: tr.train_time,
-    conductorId: tr.conductor_id, guardianId: tr.guardian_id, weekStart: tr.week_start,
+  const mapTrain = (trn) => ({
+    id: trn.id, date: trn.train_date, time: trn.train_time,
+    conductorId: trn.conductor_id, guardianId: trn.guardian_id, weekStart: trn.week_start,
   });
 
   // Keeps the current battle's rows, plus next battle's on battle day (one row per member per week)
@@ -1543,14 +1657,14 @@ export default function App() {
     const prevMode = vsMode;
     setVsModeState(next);
     const { error } = await supabase.from("app_settings").upsert({ key: "vs_mode", value: next, updated_at: new Date().toISOString() }, { onConflict: "key" });
-    if (error) { setVsModeState(prevMode); showToast("⚠️ Couldn't save the VS goal — try again."); return false; }
+    if (error) { setVsModeState(prevMode); showToast("⚠️ " + tr("Couldn't save the VS goal — try again.")); return false; }
     return true;
   };
 
   // plan = { phases: [{ time, color, steps: [] }], notes: [], map: dataURL | null } — or null to go back to the default plan
   const saveBattlePlan = async (type, plan) => {
     const { error } = await supabase.from("app_settings").upsert({ key: `battle_plan_${type}`, value: plan ? JSON.stringify(plan) : null, updated_at: new Date().toISOString() }, { onConflict: "key" });
-    if (error) { console.error("[battle plan save]", error); showToast("⚠️ Couldn't save the battle plan — try again."); return false; }
+    if (error) { console.error("[battle plan save]", error); showToast("⚠️ " + tr("Couldn't save the battle plan — try again.")); return false; }
     setBattlePlans(prev => ({ ...prev, [type]: plan }));
     return true;
   };
@@ -1562,11 +1676,11 @@ export default function App() {
     if (!buddyId) return true;
     const ids = [memberId, buddyId];
     const { error } = await supabase.from("members").update({ buddy_id: null }).in("id", ids);
-    if (error) { console.error("[unpair buddy]", error); showToast("⚠️ Couldn't remove the buddy pairing — try again."); return false; }
+    if (error) { console.error("[unpair buddy]", error); showToast("⚠️ " + tr("Couldn't remove the buddy pairing — try again.")); return false; }
     const hit = (id) => ids.some(x => String(x) === String(id));
     setMembersState(prev => prev.map(mb => hit(mb.id) ? { ...mb, buddy: null } : mb));
     setUser(prev => prev && hit(prev.id) ? { ...prev, buddy: null } : prev);
-    if (!silent) showToast("Buddy pairing removed");
+    if (!silent) showToast(tr("Buddy pairing removed"));
     return true;
   };
 
@@ -1577,10 +1691,10 @@ export default function App() {
     const hadBuddy = !!m.buddy;
     if (hadBuddy && !(await unpairBuddy(memberId, { silent: true }))) return false;
     const { error } = await supabase.from("members").update({ profession }).eq("id", memberId);
-    if (error) { console.error("[change profession]", error); showToast("⚠️ Couldn't change profession — try again."); return false; }
+    if (error) { console.error("[change profession]", error); showToast("⚠️ " + tr("Couldn't change profession — try again.")); return false; }
     setMembersState(prev => prev.map(mb => String(mb.id) === String(memberId) ? { ...mb, profession } : mb));
     setUser(prev => prev && String(prev.id) === String(memberId) ? { ...prev, profession } : prev);
-    showToast(`Profession set to ${profession === "engineer" ? "🔧 Engineer" : "⚔️ War Leader"}${hadBuddy ? " — buddy pairing removed" : ""}`);
+    showToast(tr(hadBuddy ? "Profession set to {p} — buddy pairing removed" : "Profession set to {p}", { p: profession === "engineer" ? "🔧 " + tr("Engineer") : "⚔️ " + tr("War Leader") }));
     return true;
   };
 
@@ -1601,7 +1715,7 @@ export default function App() {
     setStormConfig(prev => ({ ...prev, [type]: next }));
     const { error } = await supabase.from("app_settings")
       .upsert({ key: `storm_config_${type}`, value: JSON.stringify(next), updated_at: new Date().toISOString() }, { onConflict: "key" });
-    if (error) { console.error("[storm settings save error]", error); showToast("⚠️ Settings didn't save — please try again."); return false; }
+    if (error) { console.error("[storm settings save error]", error); showToast("⚠️ " + tr("Settings didn't save — please try again.")); return false; }
     return true;
   };
 
@@ -1631,7 +1745,7 @@ export default function App() {
           power: s.power, squad_type: s.squadType, availability: s.availability,
           time_preference: s.timePreference, can_flex_time: s.canFlexTime || null, updated_at: new Date(),
         }, { onConflict: "member_id,week_start" });
-        if (upsertErr) { console.error(`[${table} error]`, upsertErr); showToast("⚠️ Sign-up failed to save — please try again."); return; }
+        if (upsertErr) { console.error(`[${table} error]`, upsertErr); showToast("⚠️ " + tr("Sign-up failed to save — please try again.")); return; }
         recountSignupCount(s.userId);
         if (s.power) {
           const units = Math.round(parseFloat(s.power) * 1000000);
@@ -1664,7 +1778,7 @@ export default function App() {
           type, battle_date: date, week_start: date,
           time_a: data.timeA, time_b: data.timeB, team_data: data, updated_at: new Date(),
         }, { onConflict: "type,battle_date" });
-        if (error) { console.error("[battle_teams error]", error); showToast("⚠️ Teams failed to save — please try again."); }
+        if (error) { console.error("[battle_teams error]", error); showToast("⚠️ " + tr("Teams failed to save — please try again.")); }
       });
       return next;
     });
@@ -1672,7 +1786,9 @@ export default function App() {
   const setCsTeams = makeTeamsSetter("canyon", setCsTeamsState);
   const setDsTeams = makeTeamsSetter("desert", setDsTeamsState);
 
-  const t = T[lang] || T.en;
+  // Missing keys fall back to English; tr() reads the same language
+  setI18nLang(lang);
+  const t = { ...T.en, ...(T[lang] || {}) };
 
   const showToast = (msg) => {
     setToast(msg);
@@ -1715,7 +1831,7 @@ export default function App() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "var(--bg)" }}>
         <div style={{ textAlign: "center" }}>
           <div className="spinner" />
-          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 20, color: "var(--gold)", marginTop: 16, letterSpacing: 2 }}>Loading WiLD Hub...</div>
+          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: 20, color: "var(--gold)", marginTop: 16, letterSpacing: 2 }}>{tr("Loading WiLD Hub...")}</div>
         </div>
       </div>
     </>
@@ -1724,7 +1840,7 @@ export default function App() {
   if (!user) return (
     <>
       <style>{css}</style>
-      <AuthPage onLogin={login} members={members} setMembers={setMembers} t={t} />
+      <AuthPage onLogin={login} members={members} setMembers={setMembers} t={t} setLang={setLang} />
     </>
   );
 
@@ -1740,12 +1856,12 @@ export default function App() {
         <main className="main-content">
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
             <div style={{ fontSize: 56, marginBottom: 20 }}>⏳</div>
-            <div className="section-title" style={{ fontSize: 26, marginBottom: 12 }}>Pending Approval</div>
+            <div className="section-title" style={{ fontSize: 26, marginBottom: 12 }}>{tr("Pending Approval")}</div>
             <div style={{ fontSize: 15, color: "var(--text-mid)", marginBottom: 8, lineHeight: 1.6 }}>
-              Your account is waiting for approval from an R4 or Admin.
+              {tr("Your account is waiting for approval from an R4 or Admin.")}
             </div>
             <div style={{ fontSize: 14, color: "var(--text-dim)", marginBottom: 32 }}>
-              You'll have full access once approved. Please check back soon!
+              {tr("You'll have full access once approved. Please check back soon!")}
             </div>
             <button className="btn btn-secondary" onClick={logout}>{t.logout}</button>
           </div>
@@ -1780,7 +1896,7 @@ export default function App() {
 }
 
 // ─── AUTH PAGE ────────────────────────────────────────────────────────────────
-function AuthPage({ onLogin, members, setMembers, t }) {
+function AuthPage({ onLogin, members, setMembers, t, setLang }) {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ username: "", password: "", confirm: "", secQ: SECURITY_QUESTIONS[0], secA: "", profession: "engineer", language: "en" });
   const [error, setError] = useState("");
@@ -1793,24 +1909,24 @@ function AuthPage({ onLogin, members, setMembers, t }) {
   const [submitting, setSubmitting] = useState(false);
 
   const handleLogin = async () => {
-    if (!form.username || !form.password) { setError("Please fill all fields."); return; }
+    if (!form.username || !form.password) { setError(tr("Please fill all fields.")); return; }
     setError(""); setSubmitting(true);
     try {
       const ok = await onLogin(form.username, form.password);
-      if (!ok) setError("Invalid username or password.");
+      if (!ok) setError(tr("Invalid username or password."));
     } catch (err) {
-      setError("Connection error. Please check your internet and try again.");
+      setError(tr("Connection error. Please check your internet and try again."));
     }
     setSubmitting(false);
   };
 
   const handleSignup = async () => {
-    if (!form.username || !form.password || !form.confirm || !form.secA) { setError("Please fill all fields."); return; }
-    if (form.password !== form.confirm) { setError("Passwords do not match."); return; }
+    if (!form.username || !form.password || !form.confirm || !form.secA) { setError(tr("Please fill all fields.")); return; }
+    if (form.password !== form.confirm) { setError(tr("Passwords do not match.")); return; }
     setSubmitting(true);
     try {
     const { data: existing } = await supabase.from("members").select("id").ilike("username", form.username).maybeSingle();
-    if (existing) { setError("Username already taken."); setSubmitting(false); return; }
+    if (existing) { setError(tr("Username already taken.")); setSubmitting(false); return; }
     // Admin switch: when "require_approval" is on, new accounts wait for approval
     const { data: approvalSetting } = await supabase.from("app_settings").select("value").eq("key", "require_approval").maybeSingle();
     const needsApproval = approvalSetting?.value === "true";
@@ -1828,28 +1944,28 @@ function AuthPage({ onLogin, members, setMembers, t }) {
       signup_count: 0,
       attendance_count: 0,
     });
-    if (error) { setError("Error creating account. Please try again."); setSubmitting(false); return; }
+    if (error) { setError(tr("Error creating account. Please try again.")); setSubmitting(false); return; }
     setError(""); setMode("login");
     setForm(f => ({ ...f, username: form.username, password: "" }));
     } catch (err) {
-      setError("Connection error. Please check your internet and try again.");
+      setError(tr("Connection error. Please check your internet and try again."));
     }
     setSubmitting(false);
   };
 
   const handleRecovery = () => {
     const found = members.find(m => m.username.toLowerCase() === form.username.toLowerCase());
-    if (!found) { setError("Username not found."); return; }
+    if (!found) { setError(tr("Username not found.")); return; }
     setRecoveryUser(found); setRecoveryStep(2); setError("");
   };
 
   const handleRecoveryAnswer = () => {
-    if (form.secA.toLowerCase() !== recoveryUser.securityA) { setError("Incorrect answer."); return; }
+    if (form.secA.toLowerCase() !== recoveryUser.securityA) { setError(tr("Incorrect answer.")); return; }
     setRecoveryStep(3); setError("");
   };
 
   const handleNewPassword = () => {
-    if (!form.password || form.password !== form.confirm) { setError("Passwords do not match."); return; }
+    if (!form.password || form.password !== form.confirm) { setError(tr("Passwords do not match.")); return; }
     setMembers(m => m.map(mb => mb.id === recoveryUser.id ? { ...mb, password: form.password } : mb));
     setRecovery(false); setRecoveryStep(1); setMode("login"); setError("");
   };
@@ -1859,15 +1975,15 @@ function AuthPage({ onLogin, members, setMembers, t }) {
       <div className="auth-card">
         <div className="auth-logo"><img src={WORDMARK_SRC} alt="WiLD" /><h1>HUB</h1></div>
         {recoveryStep === 1 && <>
-          <div className="form-group"><label className="form-label">{t.username}</label><input className="form-input" value={form.username} onChange={e => set("username", e.target.value)} placeholder="Your username" /></div>
+          <div className="form-group"><label className="form-label">{t.username}</label><input className="form-input" value={form.username} onChange={e => set("username", e.target.value)} placeholder={tr("Your username")} /></div>
           {error && <p style={{ color: "var(--red)", fontSize: 13, marginBottom: 12 }}>{error}</p>}
           <button className="btn btn-primary btn-full" onClick={handleRecovery}>{t.recover}</button>
         </>}
         {recoveryStep === 2 && recoveryUser && <>
-          <p style={{ marginBottom: 16, fontSize: 14, color: "var(--text-mid)" }}>Security question: <strong>{recoveryUser.securityQ}</strong></p>
+          <p style={{ marginBottom: 16, fontSize: 14, color: "var(--text-mid)" }}>{tr("Security question")}: <strong>{tr(recoveryUser.securityQ)}</strong></p>
           <div className="form-group"><label className="form-label">{t.securityAnswer}</label><input className="form-input" value={form.secA} onChange={e => set("secA", e.target.value)} /></div>
           {error && <p style={{ color: "var(--red)", fontSize: 13, marginBottom: 12 }}>{error}</p>}
-          <button className="btn btn-primary btn-full" onClick={handleRecoveryAnswer}>Verify</button>
+          <button className="btn btn-primary btn-full" onClick={handleRecoveryAnswer}>{tr("Verify")}</button>
         </>}
         {recoveryStep === 3 && <>
           <div className="form-group"><label className="form-label">{t.newPassword}</label><input className="form-input" type="password" value={form.password} onChange={e => set("password", e.target.value)} /></div>
@@ -1875,7 +1991,7 @@ function AuthPage({ onLogin, members, setMembers, t }) {
           {error && <p style={{ color: "var(--red)", fontSize: 13, marginBottom: 12 }}>{error}</p>}
           <button className="btn btn-primary btn-full" onClick={handleNewPassword}>{t.resetPassword}</button>
         </>}
-        <button className="btn btn-ghost btn-full" style={{ marginTop: 12 }} onClick={() => { setRecovery(false); setRecoveryStep(1); setError(""); }}>← Back</button>
+        <button className="btn btn-ghost btn-full" style={{ marginTop: 12 }} onClick={() => { setRecovery(false); setRecoveryStep(1); setError(""); }}>← {tr("Back")}</button>
       </div>
     </div>
   );
@@ -1888,18 +2004,18 @@ function AuthPage({ onLogin, members, setMembers, t }) {
           <button className={`tab ${mode === "login" ? "active" : ""}`} onClick={() => { setMode("login"); setError(""); }}>{t.signIn}</button>
           <button className={`tab ${mode === "signup" ? "active" : ""}`} onClick={() => { setMode("signup"); setError(""); }}>{t.createAccount}</button>
         </div>
-        <div className="form-group"><label className="form-label">{t.username}</label><input className="form-input" value={form.username} onChange={e => set("username", e.target.value)} placeholder="YourGameName" /></div>
+        <div className="form-group"><label className="form-label">{t.username}</label><input className="form-input" value={form.username} onChange={e => set("username", e.target.value)} placeholder={tr("YourGameName")} /></div>
         <div className="form-group"><label className="form-label">{t.password}</label><input className="form-input" type="password" value={form.password} onChange={e => set("password", e.target.value)} /></div>
         {mode === "signup" && <>
           <div className="form-group"><label className="form-label">{t.confirmPassword}</label><input className="form-input" type="password" value={form.confirm} onChange={e => set("confirm", e.target.value)} /></div>
           <div className="form-group"><label className="form-label">{t.profession}</label><select className="form-input form-select" value={form.profession} onChange={e => set("profession", e.target.value)}><option value="engineer">{t.engineer}</option><option value="warLeader">{t.warLeader}</option></select></div>
-          <div className="form-group"><label className="form-label">{t.language}</label><select className="form-input form-select" value={form.language} onChange={e => set("language", e.target.value)}><option value="en">English</option><option value="it">Italiano</option><option value="fr">Français</option><option value="sv">Svenska</option><option value="tr">Türkçe</option></select></div>
-          <div className="form-group"><label className="form-label">{t.securityQuestion}</label><select className="form-input form-select" value={form.secQ} onChange={e => set("secQ", e.target.value)}>{SECURITY_QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}</select></div>
+          <div className="form-group"><label className="form-label">{t.language}</label><select className="form-input form-select" value={form.language} onChange={e => { set("language", e.target.value); setLang(e.target.value); }}>{LANGUAGE_OPTIONS.map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></div>
+          <div className="form-group"><label className="form-label">{t.securityQuestion}</label><select className="form-input form-select" value={form.secQ} onChange={e => set("secQ", e.target.value)}>{SECURITY_QUESTIONS.map(q => <option key={q} value={q}>{tr(q)}</option>)}</select></div>
           <div className="form-group"><label className="form-label">{t.securityAnswer}</label><input className="form-input" value={form.secA} onChange={e => set("secA", e.target.value)} /></div>
         </>}
         {error && <p style={{ color: "var(--red)", fontSize: 13, marginBottom: 12 }}>{error}</p>}
         <button className="btn btn-primary btn-full" onClick={mode === "login" ? handleLogin : handleSignup} disabled={submitting}>
-          {submitting ? "Please wait..." : mode === "login" ? t.signIn : t.createAccount}
+          {submitting ? tr("Please wait...") : mode === "login" ? t.signIn : t.createAccount}
         </button>
         {mode === "login" && <button className="btn btn-ghost btn-full" style={{ marginTop: 8 }} onClick={() => { setRecovery(true); setError(""); }}>{t.forgotPassword}</button>}
       </div>
@@ -1959,8 +2075,8 @@ function UpdateBanner() {
   if (!ready) return null;
   return (
     <div className="update-banner" role="status">
-      <span>🔄 WiLD Hub was updated</span>
-      <button className="btn btn-sm btn-primary" onClick={() => window.location.reload()}>Update</button>
+      <span>🔄 {tr("WiLD Hub was updated")}</span>
+      <button className="btn btn-sm btn-primary" onClick={() => window.location.reload()}>{tr("Update")}</button>
     </div>
   );
 }
@@ -2004,18 +2120,18 @@ function InstallBanner() {
     <div className="install-card">
       <img src={LOGO_SRC} alt="" style={{ width: 44, height: 44, borderRadius: 10, flexShrink: 0 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontWeight: 700, fontSize: 15 }}>Add WiLD Hub to your home screen</div>
-        <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>Opens full-screen like a real app.</div>
+        <div style={{ fontWeight: 700, fontSize: 15 }}>{tr("Add WiLD Hub to your home screen")}</div>
+        <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>{tr("Opens full-screen like a real app.")}</div>
         {showSteps && (
           <ol style={{ fontSize: 13, color: "var(--text-mid)", margin: "8px 0 0 18px", lineHeight: 1.6 }}>
-            <li>Tap the <strong>Share</strong> button <span aria-hidden="true">(□↑)</span> in Safari</li>
-            <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
-            <li>Tap <strong>Add</strong></li>
+            <li>{trRich("Tap the <b>Share</b> button (□↑) in Safari")}</li>
+            <li>{trRich("Scroll down and tap <b>Add to Home Screen</b>")}</li>
+            <li>{trRich("Tap <b>Add</b>")}</li>
           </ol>
         )}
         <div className="row" style={{ gap: 8, marginTop: 10 }}>
-          <button className="btn btn-sm btn-primary" onClick={install}>{canPrompt ? "📲 Install" : showSteps ? "Got it" : "📲 Show me how"}</button>
-          <button className="btn btn-sm btn-ghost" onClick={dismiss}>Not now</button>
+          <button className="btn btn-sm btn-primary" onClick={install}>{canPrompt ? "📲 " + tr("Install") : showSteps ? tr("Got it") : "📲 " + tr("Show me how")}</button>
+          <button className="btn btn-sm btn-ghost" onClick={dismiss}>{tr("Not now")}</button>
         </div>
       </div>
     </div>
@@ -2037,27 +2153,27 @@ function GetAppModal({ onClose }) {
     window.__wildInstallPrompt = null; setCanPrompt(false); onClose();
   };
   const steps = isIOS
-    ? [<>Tap the <strong>Share</strong> button (□↑) in Safari</>, <>Scroll down and tap <strong>Add to Home Screen</strong></>, <>Tap <strong>Add</strong></>]
-    : [<>Tap Chrome's <strong>⋮</strong> menu (top right)</>, <>Tap <strong>Install app</strong> or <strong>Add to Home screen</strong></>, <>Tap <strong>Install</strong></>];
+    ? [trRich("Tap the <b>Share</b> button (□↑) in Safari"), trRich("Scroll down and tap <b>Add to Home Screen</b>"), trRich("Tap <b>Add</b>")]
+    : [trRich("Tap Chrome's <b>⋮</b> menu (top right)"), trRich("Tap <b>Install app</b> or <b>Add to Home screen</b>"), trRich("Tap <b>Install</b>")];
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 400 }}>
         <div className="modal-header">
-          <div className="modal-title">📲 Get the WiLD Hub app</div>
-          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close">✕</button>
+          <div className="modal-title">📲 {tr("Get the WiLD Hub app")}</div>
+          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label={tr("Close")}>✕</button>
         </div>
         <div className="modal-body">
           {canPrompt ? (
-            <button className="btn btn-primary btn-full" onClick={install}>📲 Install WiLD Hub</button>
+            <button className="btn btn-primary btn-full" onClick={install}>📲 {tr("Install WiLD Hub")}</button>
           ) : (<>
             <ol style={{ fontSize: 14, color: "var(--text-mid)", margin: "0 0 0 18px", lineHeight: 1.8 }}>
               {steps.map((st, i) => <li key={i}>{st}</li>)}
             </ol>
-            {!isIOS && <div className="form-hint" style={{ marginTop: 10 }}>If you uninstalled the app recently, Chrome can take a while before it offers Install again — the ⋮ menu option still works.</div>}
+            {!isIOS && <div className="form-hint" style={{ marginTop: 10 }}>{tr("If you uninstalled the app recently, Chrome can take a while before it offers Install again — the ⋮ menu option still works.")}</div>}
           </>)}
         </div>
         <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose}>Close</button>
+          <button className="btn btn-secondary" onClick={onClose}>{tr("Close")}</button>
         </div>
       </div>
     </div>
@@ -2074,14 +2190,14 @@ function TopBar({ user, t, onLogout, setPage, darkMode, setDarkMode }) {
         <span className="hub-tag">HUB</span>
       </button>
       <div className="top-bar-user">
-        <button onClick={() => setDarkMode(d => !d)} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 4px", fontSize: 18, lineHeight: 1, color: "var(--text-mid)" }} title={darkMode ? "Light mode" : "Dark mode"}>
+        <button onClick={() => setDarkMode(d => !d)} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 4px", fontSize: 18, lineHeight: 1, color: "var(--text-mid)" }} title={darkMode ? tr("Light mode") : tr("Dark mode")}>
           {darkMode ? "☀️" : "🌙"}
         </button>
         <button onClick={() => setPage("profile")} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: "4px 6px", borderRadius: 8 }} title={t.profile}>
           <span className="top-bar-name" style={{ fontSize: 13, color: "var(--gold)", textDecoration: "underline", fontWeight: 600 }}>{user.username}</span>
           <div className="avatar">{user.username[0].toUpperCase()}</div>
         </button>
-        {showGetApp && <button onClick={() => setGetApp(true)} title="Get the app" aria-label="Get the app" style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 4px", fontSize: 18, lineHeight: 1 }}>📲</button>}
+        {showGetApp && <button onClick={() => setGetApp(true)} title={tr("Get the app")} aria-label={tr("Get the app")} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 4px", fontSize: 18, lineHeight: 1 }}>📲</button>}
         <button className="btn btn-ghost btn-sm" onClick={onLogout} style={{ padding: "6px 8px", fontSize: 12, whiteSpace: "nowrap" }}>{t.logout}</button>
       </div>
       {getApp && <GetAppModal onClose={() => setGetApp(false)} />}
@@ -2094,9 +2210,9 @@ function BottomNav({ page, setPage, t, isR4, members, buddyRequests }) {
   const hasAdminAlert = isR4 && (members.some(m => !m.approved) || (buddyRequests || []).length > 0);
   const items = [
     { id: "home", label: t.home, icon: "🏠" },
-    { id: "trains", label: "Trains", icon: "🚂" },
+    { id: "trains", label: tr("Trains"), icon: "🚂" },
     { id: "battle", label: t.plans, icon: "⚔️" },
-    { id: "calculators", label: "Calculators", icon: "🖩" },
+    { id: "calculators", label: tr("Calculators"), icon: "🖩" },
     ...(isR4 ? [{ id: "admin", label: t.admin, icon: "⚙️", alert: hasAdminAlert }] : []),
   ];
   return (
@@ -2144,7 +2260,7 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
       <div style={{ marginBottom: 20 }}>
         <div className="vs-card">
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, color: "var(--text-dim)", marginBottom: 2 }}>Weekly Goal</div>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, color: "var(--text-dim)", marginBottom: 2 }}>{tr("Weekly Goal")}</div>
             <div className="vs-mode">
               VS: <span style={{ color: "var(--gold)" }}>{vsMode}</span>
             </div>
@@ -2156,9 +2272,9 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
               onClick={async () => {
                 const next = vsMode === "PUSH" ? "SAVE" : "PUSH";
                 const ok = await setVsMode(next);
-                if (ok) showToast(`Weekly goal set to VS: ${next}`);
+                if (ok) showToast(tr("Weekly goal set to VS: {mode}", { mode: next }));
               }}>
-              Switch to {vsMode === "PUSH" ? "SAVE" : "PUSH"}
+              {tr("Switch to {mode}", { mode: vsMode === "PUSH" ? "SAVE" : "PUSH" })}
             </button>
           )}
         </div>
@@ -2167,22 +2283,22 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
       {/* My Train */}
       {(() => {
         const todayStr = serverToday();
-        const myTrains = trains.filter(tr => {
-          const isUpcoming = tr.date >= todayStr;
-          const isMe = String(tr.conductorId) === String(user.id) || String(tr.guardianId) === String(user.id);
+        const myTrains = trains.filter(trn => {
+          const isUpcoming = trn.date >= todayStr;
+          const isMe = String(trn.conductorId) === String(user.id) || String(trn.guardianId) === String(user.id);
           return isUpcoming && isMe;
         }).sort((a,b) => a.date.localeCompare(b.date));
         const next = myTrains[0];
         if (!next) return null;
-        const role = String(next.conductorId) === String(user.id) ? "Conductor 🚂" : "Guardian 🛡️";
+        const role = String(next.conductorId) === String(user.id) ? tr("Conductor") + " 🚂" : tr("Guardian") + " 🛡️";
         const trainDt = parseTrainTime(next.date, next.time);
-        const friendlyDate = next.date ? new Date(next.date + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }) : next.date;
+        const friendlyDate = next.date ? new Date(next.date + "T12:00:00Z").toLocaleDateString(dateLocale(), { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }) : next.date;
         return (
           <div style={{ marginBottom: 20 }}>
             <div className="train-card" style={{ cursor: "pointer" }} onClick={() => setPage("trains")}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "var(--green)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>🚂 Your Next Train</div>
-              <div style={{ fontSize: 17, fontWeight: 700, color: "var(--text)" }}>{friendlyDate}{next.time ? <span style={{ color: "var(--text-mid)", fontWeight: 400 }}> — {next.time} server time</span> : ""}</div>
-              <div style={{ fontSize: 13, color: "var(--text-mid)", marginTop: 2 }}>Role: <strong style={{ color: "var(--text)" }}>{role}</strong></div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "var(--green)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>🚂 {tr("Your Next Train")}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: "var(--text)" }}>{friendlyDate}{next.time ? <span style={{ color: "var(--text-mid)", fontWeight: 400 }}> — {next.time} {tr("server time")}</span> : ""}</div>
+              <div style={{ fontSize: 13, color: "var(--text-mid)", marginTop: 2 }}>{tr("Role")}: <strong style={{ color: "var(--text)" }}>{role}</strong></div>
               {trainDt && <TrainCountdown target={trainDt} />}
             </div>
           </div>
@@ -2199,7 +2315,7 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
               <div style={{ fontSize: 12, color: "var(--text-dim)", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>{t.myBuddy}</div>
               <div style={{ fontSize: 16, fontWeight: 700, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} className={buddy.profession === "engineer" ? "name-engineer" : "name-warleader"}>{buddy.username}</div>
             </div>
-            <span style={{ fontSize: 13, color: "var(--gold)", fontWeight: 600, flexShrink: 0 }}>Manage ›</span>
+            <span style={{ fontSize: 13, color: "var(--gold)", fontWeight: 600, flexShrink: 0 }}>{tr("Manage")} ›</span>
           </div>
         ) : (
           <div className="buddy-card" style={{ background: "var(--surface2)", border: "1.5px dashed var(--border)" }}>
@@ -2207,8 +2323,8 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
             <div>
               {buddyPending ? (
                 <>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)" }}>⏳ Request Pending</div>
-                  <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>Leadership will pair you soon</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)" }}>⏳ {tr("Request Pending")}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>{tr("Leadership will pair you soon")}</div>
                 </>
               ) : (
                 <>
@@ -2250,16 +2366,16 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
         const dsAssign = getAssignment(dsTeams, "desert");
         if (!csAssign && !dsAssign) return null;
         const shortSlot = (sl) => !sl ? "" : sl === "Floater" ? "Flt" : sl.replace(/^Team\s*/i, "T");
-        const shortDate = (d) => new Date(d + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+        const shortDate = (d) => new Date(d + "T12:00:00Z").toLocaleDateString(dateLocale(), { month: "short", day: "numeric", timeZone: "UTC" });
         if (csAssign && dsAssign) return (
           <div style={{ marginBottom: 20 }}>
-            <h2 className="section-title" style={{ marginBottom: 12 }}>Storm Assignments</h2>
+            <h2 className="section-title" style={{ marginBottom: 12 }}>{tr("Storm Assignments")}</h2>
             <div className="assign-row">
               {[{ ...csAssign, name: "CANYON", type: "canyon" }, { ...dsAssign, name: "DESERT", type: "desert" }].map(a => (
                 <div key={a.type} className="assign-mini" role="button" tabIndex={0} onClick={() => setPage("battle")} onKeyDown={e => { if (e.key === "Enter") setPage("battle"); }}>
                   <div className="assign-mini-l1"><span aria-hidden="true">{a.team === "A" ? "🅰️" : "🅱️"}</span>{a.name}</div>
-                  <div className="assign-mini-l2">Team {a.team}{a.slot ? ` • ${shortSlot(a.slot)}` : ""}{a.role ? <span className="assign-mini-role"> ({a.role})</span> : null}</div>
-                  <div className="assign-mini-l3"><span>⏰ {a.time} · {shortDate(a.date)}</span><span className="assign-mini-view">View →</span></div>
+                  <div className="assign-mini-l2">{tr("Team")} {a.team}{a.slot ? ` • ${shortSlot(a.slot)}` : ""}{a.role ? <span className="assign-mini-role"> ({slotRoleLabel(a.role)})</span> : null}</div>
+                  <div className="assign-mini-l3"><span>⏰ {a.time} · {shortDate(a.date)}</span><span className="assign-mini-view">{tr("View")} →</span></div>
                 </div>
               ))}
             </div>
@@ -2267,7 +2383,7 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
         );
         return (
           <div style={{ marginBottom: 20 }}>
-            <h2 className="section-title" style={{ marginBottom: 12 }}>Storm Assignments</h2>
+            <h2 className="section-title" style={{ marginBottom: 12 }}>{tr("Storm Assignments")}</h2>
             {[csAssign && { ...csAssign, label: "🏔️ Canyon Storm", type: "canyon" }, dsAssign && { ...dsAssign, label: "🏜️ Desert Storm", type: "desert" }]
               .filter(Boolean).map(a => (
               <div key={a.type} className="assign-card" onClick={() => setPage("battle")}>
@@ -2275,14 +2391,14 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 11, color: "var(--text-dim)", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>{a.label}</div>
                   <div style={{ fontSize: 15, fontWeight: 700, marginTop: 2 }}>
-                    Team {a.team}{a.slot ? ` • ${a.slot}` : ""}
-                    {a.role && <span style={{ fontSize: 12, color: "var(--text-dim)", fontWeight: 400, marginLeft: 6 }}>({a.role})</span>}
+                    {tr("Team")} {a.team}{a.slot ? ` • ${a.slot}` : ""}
+                    {a.role && <span style={{ fontSize: 12, color: "var(--text-dim)", fontWeight: 400, marginLeft: 6 }}>({slotRoleLabel(a.role)})</span>}
                   </div>
                   <div style={{ fontSize: 12, color: "var(--text-mid)", marginTop: 2 }}>
-                    ⏰ {a.time} server time • {new Date(a.date + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })}
+                    ⏰ {a.time} {tr("server time")} • {new Date(a.date + "T12:00:00Z").toLocaleDateString(dateLocale(), { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })}
                   </div>
                 </div>
-                <span style={{ fontSize: 12, color: "var(--gold)", fontWeight: 600 }}>View →</span>
+                <span style={{ fontSize: 12, color: "var(--gold)", fontWeight: 600 }}>{tr("View")} →</span>
               </div>
             ))}
           </div>
@@ -2292,8 +2408,8 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
       {/* Sign-up Status */}
       <div style={{ marginBottom: 20 }}>
         <h2 className="section-title" style={{ marginBottom: 12 }}>{t.stormSignups}</h2>
-        <SignupStatusCard type="canyon" label={t.canyonStorm} mySignup={myCS} isR4={isR4} isOpen={stormSettings?.canyon ?? false} isSeasonActive={stormSettings?.canyon_active ?? true} onSignup={() => setSignupModal("canyon")} onRevoke={() => { setCsSignups(s => s.filter(x => !(String(x.userId) === String(user.id) && x.week === myCS?.week))); showToast("Registration revoked."); }} t={t} />
-        <SignupStatusCard type="desert" label={t.desertStorm} mySignup={myDS} isR4={isR4} isOpen={stormSettings?.desert ?? false} isSeasonActive={stormSettings?.desert_active ?? true} onSignup={() => setSignupModal("desert")} onRevoke={() => { setDsSignups(s => s.filter(x => !(String(x.userId) === String(user.id) && x.week === myDS?.week))); showToast("Registration revoked."); }} t={t} />
+        <SignupStatusCard type="canyon" label={t.canyonStorm} mySignup={myCS} isR4={isR4} isOpen={stormSettings?.canyon ?? false} isSeasonActive={stormSettings?.canyon_active ?? true} onSignup={() => setSignupModal("canyon")} onRevoke={() => { setCsSignups(s => s.filter(x => !(String(x.userId) === String(user.id) && x.week === myCS?.week))); showToast(tr("Registration revoked.")); }} t={t} />
+        <SignupStatusCard type="desert" label={t.desertStorm} mySignup={myDS} isR4={isR4} isOpen={stormSettings?.desert ?? false} isSeasonActive={stormSettings?.desert_active ?? true} onSignup={() => setSignupModal("desert")} onRevoke={() => { setDsSignups(s => s.filter(x => !(String(x.userId) === String(user.id) && x.week === myDS?.week))); showToast(tr("Registration revoked.")); }} t={t} />
       </div>
 
       {/* Modals */}
@@ -2310,7 +2426,7 @@ function HomePage({ user, members, buddyRequests, setBuddyRequestsState, csSignu
         } else {
           setDsSignups(s => [...s.filter(notMine), { ...data, userId: user.id, week: weekStart }]);
         }
-        setSignupModal(null); showToast("Registration saved! ✓");
+        setSignupModal(null); showToast(tr("Registration saved! ✓"));
       }} t={t} isCanyon={signupModal === "canyon"} />}
     </div>
   );
@@ -2324,16 +2440,15 @@ function ProfessionBuddyModal({ member, members, self, onClose }) {
   const live = (members || []).find(m => String(m.id) === String(member?.id)) || member;
   if (!live) return null;
   const buddy = live.buddy ? (members || []).find(m => String(m.id) === String(live.buddy)) : null;
-  const whose = self ? "your" : `${live.username}'s`;
-
+  
   const pick = async (profession) => {
     if (busy || live.profession === profession) return;
-    if (buddy && !window.confirm(`Changing ${whose} profession removes the buddy pairing with ${buddy.username}. Continue?`)) return;
+    if (buddy && !window.confirm(self ? tr("Changing your profession removes the buddy pairing with {buddy}. Continue?", { buddy: buddy.username }) : tr("Changing {name}'s profession removes the buddy pairing with {buddy}. Continue?", { name: live.username, buddy: buddy.username }))) return;
     setBusy(true); await changeProfession(live.id, profession); setBusy(false);
   };
   const remove = async () => {
     if (!buddy || busy) return;
-    if (!window.confirm(`Remove the buddy pairing between ${live.username} and ${buddy.username}?`)) return;
+    if (!window.confirm(tr("Remove the buddy pairing between {a} and {b}?", { a: live.username, b: buddy.username }))) return;
     setBusy(true); await unpairBuddy(live.id); setBusy(false);
   };
 
@@ -2341,26 +2456,26 @@ function ProfessionBuddyModal({ member, members, self, onClose }) {
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 400 }}>
       <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 380 }}>
         <div className="modal-header">
-          <div className="modal-title">🤝 {self ? "Profession & Buddy" : live.username}</div>
-          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close">✕</button>
+          <div className="modal-title">🤝 {self ? tr("Profession & Buddy") : live.username}</div>
+          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label={tr("Close")}>✕</button>
         </div>
         <div className="modal-body">
           <div style={{ background: "var(--surface2)", borderRadius: 10, padding: "10px 14px", marginBottom: 14, fontSize: 14 }}>
-            {buddy ? <>Buddy: <strong className={buddy.profession === "engineer" ? "name-engineer" : "name-warleader"}>{buddy.username}</strong></> : <span style={{ color: "var(--text-dim)" }}>No buddy assigned</span>}
+            {buddy ? <>{tr("Buddy")}: <strong className={buddy.profession === "engineer" ? "name-engineer" : "name-warleader"}>{buddy.username}</strong></> : <span style={{ color: "var(--text-dim)" }}>{tr("No buddy assigned")}</span>}
           </div>
-          <div className="form-label">Profession</div>
+          <div className="form-label">{tr("Profession")}</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {[["engineer", "🔧 Engineer"], ["warLeader", "⚔️ War Leader"]].map(([val, label]) => (
+            {[["engineer", "🔧 " + tr("Engineer")], ["warLeader", "⚔️ " + tr("War Leader")]].map(([val, label]) => (
               <button key={val} type="button" disabled={busy} onClick={() => pick(val)}
                 className={`btn ${live.profession === val ? "btn-primary" : "btn-secondary"}`} aria-pressed={live.profession === val}>{label}</button>
             ))}
           </div>
           {buddy && (
-            <button type="button" className="btn btn-danger btn-full" style={{ marginTop: 14 }} disabled={busy} onClick={remove}>Remove buddy</button>
+            <button type="button" className="btn btn-danger btn-full" style={{ marginTop: 14 }} disabled={busy} onClick={remove}>{tr("Remove buddy")}</button>
           )}
         </div>
         <div className="modal-footer">
-          <button className="btn btn-primary" onClick={onClose}>Done</button>
+          <button className="btn btn-primary" onClick={onClose}>{tr("Done")}</button>
         </div>
       </div>
     </div>
@@ -2387,7 +2502,7 @@ function BuddyRequestModal({ user, onClose, onSuccess, showToast, t }) {
       if (onSuccess) onSuccess(saved);
       setBtnState("done");
     } else {
-      showToast("Error: " + (error?.message || "Could not submit"));
+      showToast(tr("Error") + ": " + (error?.message || tr("Could not submit")));
       setBtnState("idle");
     }
   };
@@ -2398,22 +2513,22 @@ function BuddyRequestModal({ user, onClose, onSuccess, showToast, t }) {
         <div className="modal-header"><div className="modal-title">🤝 {t.requestBuddy}</div><button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button></div>
         <div className="modal-body">
           <div style={{ background: "var(--surface2)", borderRadius: 10, padding: "12px 16px", marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 4 }}>Your Profile</div>
+            <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 4 }}>{tr("Your Profile")}</div>
             <div style={{ fontWeight: 700 }}>{user.username}</div>
             <div style={{ fontSize: 13, color: "var(--text-mid)" }}>{user.profession === "engineer" ? "🔧 " + t.engineer : "⚔️ " + t.warLeader}</div>
           </div>
           <div className="form-group">
-            <label className="form-label">Buddy Status</label>
+            <label className="form-label">{tr("Buddy Status")}</label>
             <div className="radio-group">
-              <div className={`radio-option ${needBuddy ? "selected" : ""}`} onClick={() => setNeedBuddy(true)}><div className="radio-dot"></div><span>I need a buddy</span></div>
-              <div className={`radio-option ${!needBuddy ? "selected" : ""}`} onClick={() => setNeedBuddy(false)}><div className="radio-dot"></div><span>I have a buddy</span></div>
+              <div className={`radio-option ${needBuddy ? "selected" : ""}`} onClick={() => setNeedBuddy(true)}><div className="radio-dot"></div><span>{tr("I need a buddy")}</span></div>
+              <div className={`radio-option ${!needBuddy ? "selected" : ""}`} onClick={() => setNeedBuddy(false)}><div className="radio-dot"></div><span>{tr("I have a buddy")}</span></div>
             </div>
           </div>
-          {!needBuddy && <div className="form-group"><label className="form-label">Buddy's Username</label><input className="form-input" value={buddyName} onChange={e => setBuddyName(e.target.value)} placeholder="Enter their in-game name" /></div>}
+          {!needBuddy && <div className="form-group"><label className="form-label">{tr("Buddy's Username")}</label><input className="form-input" value={buddyName} onChange={e => setBuddyName(e.target.value)} placeholder={tr("Enter their in-game name")} /></div>}
         </div>
         <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose}>{btnState === "done" ? "Close" : t.cancel}</button>
-          <button className="btn btn-primary" onClick={handleSubmit} disabled={btnState !== "idle"} style={btnState === "done" ? {background:"var(--green)",cursor:"default",opacity:1} : {}}>{btnState === "done" ? "✅ Submitted!" : btnState === "loading" ? "Submitting..." : t.submit}</button>
+          <button className="btn btn-secondary" onClick={onClose}>{btnState === "done" ? tr("Close") : t.cancel}</button>
+          <button className="btn btn-primary" onClick={handleSubmit} disabled={btnState !== "idle"} style={btnState === "done" ? {background:"var(--green)",cursor:"default",opacity:1} : {}}>{btnState === "done" ? "✅ " + tr("Submitted!") : btnState === "loading" ? tr("Submitting...") : t.submit}</button>
         </div>
       </div>
     </div>
@@ -2437,15 +2552,15 @@ function AdminBuddy({ members, setMembers, buddyRequests, setBuddyRequests, t, s
   }, []);
 
   const pairBuddies = async () => {
-    if (!eng || !wl) { showToast("Select both members."); return; }
+    if (!eng || !wl) { showToast(tr("Select both members.")); return; }
     const { error: e1 } = await supabase.from("members").update({ buddy_id: wl }).eq("id", eng);
     const { error: e2 } = await supabase.from("members").update({ buddy_id: eng }).eq("id", wl);
-    if (e1 || e2) { showToast("⚠️ Couldn't pair — has the buddy database update been run?"); return; }
+    if (e1 || e2) { showToast("⚠️ " + tr("Couldn't pair — has the buddy database update been run?")); return; }
     setMembers(m => m.map(mb => String(mb.id) === String(eng) ? { ...mb, buddy: wl } : String(mb.id) === String(wl) ? { ...mb, buddy: eng } : mb));
     // Clear any open requests from the two members just paired
     const pairedCodes = members.filter(mb => String(mb.id) === String(eng) || String(mb.id) === String(wl)).map(mb => String(mb.memberId));
     setBuddyRequests(req => req.filter(r => !pairedCodes.includes(String(r.memberId))));
-    setEng(""); setWl(""); showToast("Buddies paired! ✓");
+    setEng(""); setWl(""); showToast(tr("Buddies paired! ✓"));
   };
 
   return (
@@ -2457,8 +2572,8 @@ function AdminBuddy({ members, setMembers, buddyRequests, setBuddyRequests, t, s
             <div key={r.id} className="card" style={{ marginBottom: 8 }}>
               <div className="card-body">
                 <div style={{ fontWeight: 700 }}>{nameFor(r)}</div>
-                <div style={{ fontSize: 13, color: "var(--text-mid)" }}>{r.profession === "engineer" ? "🔧 Engineer" : "⚔️ War Leader"} • {r.needBuddy ? "Needs a buddy" : `Has buddy: ${r.buddyName}`}</div>
-                <button className="btn btn-sm btn-danger" style={{ marginTop: 8 }} onClick={() => setBuddyRequests(req => req.filter(x => x.id !== r.id))}>Dismiss</button>
+                <div style={{ fontSize: 13, color: "var(--text-mid)" }}>{r.profession === "engineer" ? "🔧 " + tr("Engineer") : "⚔️ " + tr("War Leader")} • {r.needBuddy ? tr("Needs a buddy") : tr("Has buddy: {name}", { name: r.buddyName })}</div>
+                <button className="btn btn-sm btn-danger" style={{ marginTop: 8 }} onClick={() => setBuddyRequests(req => req.filter(x => x.id !== r.id))}>{tr("Dismiss")}</button>
               </div>
             </div>
           ))}
@@ -2468,24 +2583,24 @@ function AdminBuddy({ members, setMembers, buddyRequests, setBuddyRequests, t, s
       <div className="card" style={{ marginBottom: 20 }}>
         <div className="card-header"><div className="card-title">🤝 {t.addBuddy}</div></div>
         <div className="card-body">
-          <div className="form-group"><label className="form-label">Engineer</label><select className="form-input form-select" value={eng} onChange={e => setEng(e.target.value)}><option value="">Select Engineer</option>{engineers.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}</select></div>
-          <div className="form-group"><label className="form-label">War Leader</label><select className="form-input form-select" value={wl} onChange={e => setWl(e.target.value)}><option value="">Select War Leader</option>{warLeaders.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}</select></div>
-          <button className="btn btn-primary" onClick={pairBuddies}>Pair Buddies</button>
+          <div className="form-group"><label className="form-label">{tr("Engineer")}</label><select className="form-input form-select" value={eng} onChange={e => setEng(e.target.value)}><option value="">{tr("Select Engineer")}</option>{engineers.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}</select></div>
+          <div className="form-group"><label className="form-label">{tr("War Leader")}</label><select className="form-input form-select" value={wl} onChange={e => setWl(e.target.value)}><option value="">{tr("Select War Leader")}</option>{warLeaders.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}</select></div>
+          <button className="btn btn-primary" onClick={pairBuddies}>{tr("Pair Buddies")}</button>
         </div>
       </div>
-      <div style={{ fontWeight: 700, marginBottom: 8, fontSize: 13, color: "var(--text-mid)", textTransform: "uppercase", letterSpacing: 0.5 }}>Current Buddy Pairs ({pairs.length})</div>
-      {pairs.length === 0 && <div style={{ fontSize: 13, color: "var(--text-dim)", padding: "12px 0" }}>No pairs yet.</div>}
+      <div style={{ fontWeight: 700, marginBottom: 8, fontSize: 13, color: "var(--text-mid)", textTransform: "uppercase", letterSpacing: 0.5 }}>{tr("Current Buddy Pairs")} ({pairs.length})</div>
+      {pairs.length === 0 && <div style={{ fontSize: 13, color: "var(--text-dim)", padding: "12px 0" }}>{tr("No pairs yet.")}</div>}
       {/* Unassigned members — tap a name to change their profession */}
-      <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>Tap a name to change their profession</div>
+      <div style={{ fontSize: 12, color: "var(--text-dim)", marginBottom: 6 }}>{tr("Tap a name to change their profession")}</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
         <div className="card" style={{ marginBottom: 0 }}>
           <div className="card-header">
-            <div className="card-title">🔧 Unassigned Engineers</div>
+            <div className="card-title">🔧 {tr("Unassigned Engineers")}</div>
             <span className="badge badge-gold">{engineers.length}</span>
           </div>
           <div className="card-body" style={{ padding: engineers.length === 0 ? "12px 16px" : "8px 0" }}>
             {engineers.length === 0
-              ? <div style={{ fontSize: 13, color: "var(--text-dim)" }}>All paired ✓</div>
+              ? <div style={{ fontSize: 13, color: "var(--text-dim)" }}>{tr("All paired ✓")}</div>
               : engineers.map(m => (
                 <div key={m.id} role="button" tabIndex={0} onClick={() => setProfMember(m)} style={{ padding: "7px 16px", borderBottom: "1px solid var(--border)", fontSize: 14, fontWeight: 600, cursor: "pointer", display: "flex", justifyContent: "space-between", gap: 6 }} className="name-engineer"><span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{m.username}</span><span style={{ color: "var(--text-dim)", fontWeight: 400, fontSize: 12 }}>⇄</span></div>
               ))
@@ -2494,12 +2609,12 @@ function AdminBuddy({ members, setMembers, buddyRequests, setBuddyRequests, t, s
         </div>
         <div className="card" style={{ marginBottom: 0 }}>
           <div className="card-header">
-            <div className="card-title">⚔️ Unassigned Leaders</div>
+            <div className="card-title">⚔️ {tr("Unassigned Leaders")}</div>
             <span className="badge badge-gold">{warLeaders.length}</span>
           </div>
           <div className="card-body" style={{ padding: warLeaders.length === 0 ? "12px 16px" : "8px 0" }}>
             {warLeaders.length === 0
-              ? <div style={{ fontSize: 13, color: "var(--text-dim)" }}>All paired ✓</div>
+              ? <div style={{ fontSize: 13, color: "var(--text-dim)" }}>{tr("All paired ✓")}</div>
               : warLeaders.map(m => (
                 <div key={m.id} role="button" tabIndex={0} onClick={() => setProfMember(m)} style={{ padding: "7px 16px", borderBottom: "1px solid var(--border)", fontSize: 14, fontWeight: 600, cursor: "pointer", display: "flex", justifyContent: "space-between", gap: 6 }} className="name-warleader"><span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{m.username}</span><span style={{ color: "var(--text-dim)", fontWeight: 400, fontSize: 12 }}>⇄</span></div>
               ))
@@ -2514,7 +2629,7 @@ function AdminBuddy({ members, setMembers, buddyRequests, setBuddyRequests, t, s
             <span style={{ color: "var(--border)" }}>↔</span>
             <span className="name-warleader">⚔️ {p.a.profession === "warLeader" ? p.a.username : p.b.username}</span>
           </div>
-          <button className="btn btn-sm btn-danger" style={{ padding: "3px 10px", fontSize: 12 }} onClick={() => unpairBuddy(p.a.id)}>Remove</button>
+          <button className="btn btn-sm btn-danger" style={{ padding: "3px 10px", fontSize: 12 }} onClick={() => unpairBuddy(p.a.id)}>{tr("Remove")}</button>
         </div>
       ))}
       {profMember && <ProfessionBuddyModal member={profMember} members={members} onClose={() => setProfMember(null)} />}
@@ -2527,11 +2642,11 @@ function AdminPage({ buddyRequests, setBuddyRequests, setViewMember, csAllSignup
   const [tab, setTab] = useState("signups");
   const pending = members.filter(m => !m.approved);
   const tabDef = [
-    ["signups", "⚔️ Storms", false],
-    ["members", "👥 Members", pending.length > 0],
-    ["buddy", "🤝 Buddy", (buddyRequests || []).length > 0],
-    ["trains", "🚂 Trains", false],
-    ...(isAdmin ? [["data", "📊 Data", false]] : []),
+    ["signups", "⚔️ " + tr("Storms"), false],
+    ["members", "👥 " + tr("Members"), pending.length > 0],
+    ["buddy", "🤝 " + tr("Buddy"), (buddyRequests || []).length > 0],
+    ["trains", "🚂 " + tr("Trains"), false],
+    ...(isAdmin ? [["data", "📊 " + tr("Data"), false]] : []),
   ];
   return (
     <div>
@@ -2560,7 +2675,7 @@ function useCountdown(targetDate) {
   useEffect(() => {
     const tick = () => {
       const diff = new Date(targetDate) - Date.now();
-      if (diff <= 0) { setTimeLeft("Now"); return; }
+      if (diff <= 0) { setTimeLeft(tr("Now")); return; }
       const d = Math.floor(diff / 86400000);
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
@@ -2593,12 +2708,12 @@ function SignupStatusCard({ type, label, mySignup, onSignup, onRevoke, t, isR4, 
         <div>
           <div style={{ fontWeight: 700 }}>{icon} {label}</div>
           <div style={{ fontSize: 12, color: "var(--blue)", marginTop: 2 }}>
-            Power: {mySignup.power} • {mySignup.squadType} • {mySignup.availability}
+            {tr("Power")}: {mySignup.power} • {tr(mySignup.squadType)} • {availLabel(mySignup.availability)}
           </div>
           <div style={{ fontSize: 12, color: isOpen ? "var(--green)" : "var(--gold)", marginTop: 2 }}>
-            {isOpen ? "✅ Sign-ups open — you're registered" : "⚔️ Registered — awaiting team assignment"}
+            {isOpen ? "✅ " + tr("Sign-ups open — you're registered") : "⚔️ " + tr("Registered — awaiting team assignment")}
           </div>
-          {mySignup.week && <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>📅 For the {new Date(mySignup.week + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })} battle</div>}
+          {mySignup.week && <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>📅 {tr("For the {date} battle", { date: new Date(mySignup.week + "T12:00:00Z").toLocaleDateString(dateLocale(), { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }) })}</div>}
         </div>
         <div style={{ display: "flex", gap: 6, flexDirection: "column", alignItems: "flex-end" }}>
           {canInteract && <button className="btn btn-sm btn-secondary" onClick={onSignup}>{t.editSignup}</button>}
@@ -2612,14 +2727,14 @@ function SignupStatusCard({ type, label, mySignup, onSignup, onRevoke, t, isR4, 
   return (
     <div className={`signup-status-card ${canInteract ? "signup-open" : "signup-closed"}`} style={{ marginBottom: 10, opacity: (!isSeasonActive && isR4) ? 0.6 : 1 }}>
       <div>
-        <div style={{ fontWeight: 700 }}>{icon} {label} {!isSeasonActive && isR4 && <span className="badge badge-gray" style={{ fontSize: 10, marginLeft: 6 }}>Season off</span>}</div>
+        <div style={{ fontWeight: 700 }}>{icon} {label} {!isSeasonActive && isR4 && <span className="badge badge-gray" style={{ fontSize: 10, marginLeft: 6 }}>{tr("Season off")}</span>}</div>
         <div style={{ fontSize: 12, color: canInteract ? "var(--green)" : "var(--text-dim)", marginTop: 2 }}>
-          {isOpen ? "✅ Sign-ups are open" : isR4 ? "🔒 Closed (admin override active)" : "🔒 Sign-ups are closed"}
+          {isOpen ? "✅ " + tr("Sign-ups are open") : isR4 ? "🔒 " + tr("Closed (admin override active)") : "🔒 " + tr("Sign-ups are closed")}
         </div>
       </div>
       {canInteract
         ? <button className="btn btn-sm btn-green" onClick={onSignup}>{t.notSignedUp}</button>
-        : <span className="badge badge-gray">Closed</span>}
+        : <span className="badge badge-gray">{tr("Closed")}</span>}
     </div>
   );
 }
@@ -2630,7 +2745,7 @@ function EventCard({ ev, user, t }) {
   const d = ev.date instanceof Date && !isNaN(ev.date) ? ev.date : (ev.date ? new Date(ev.date) : null);
   if (!d || isNaN(d.getTime())) return null;
   const day = d.getUTCDate();
-  const mon = d.toLocaleDateString("en-US", { timeZone: "UTC", month: "short" });
+  const mon = d.toLocaleDateString(dateLocale(), { timeZone: "UTC", month: "short" });
   const serverD = new Date(d.getTime() - SERVER_UTC_OFFSET_HOURS * 3600000);
   const h = String(serverD.getUTCHours()).padStart(2, "0");
   const m = String(serverD.getUTCMinutes()).padStart(2, "0");
@@ -2647,9 +2762,9 @@ function EventCard({ ev, user, t }) {
       <div className="event-info">
         <div className="event-title" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           {ev.title}
-          {ev.recurring && <span style={{ fontSize: 10, background: "rgba(201,140,40,0.12)", color: "var(--gold)", border: "1px solid var(--gold)", borderRadius: 20, padding: "1px 7px", fontWeight: 700 }}>🔁 every {ev.recurringDays}d</span>}
+          {ev.recurring && <span style={{ fontSize: 10, background: "rgba(201,140,40,0.12)", color: "var(--gold)", border: "1px solid var(--gold)", borderRadius: 20, padding: "1px 7px", fontWeight: 700 }}>🔁 {tr("every {n}d", { n: ev.recurringDays })}</span>}
         </div>
-        {ev.myTeam && <div className="event-detail">Team {ev.myTeam} • {ev.myAssignment} • {ev.myTeam === "A" ? ev.teamA : ev.teamB} {t.serverTime}</div>}
+        {ev.myTeam && <div className="event-detail">{tr("Team")} {ev.myTeam} • {ev.myAssignment} • {ev.myTeam === "A" ? ev.teamA : ev.teamB} {t.serverTime}</div>}
         {ev.description && <div className="event-detail">{ev.description}</div>}
         <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 2 }}>{serverTime} {t.serverTime}</div>
         {!isPast && <div style={{ fontSize: 12, color: typeColor, fontWeight: 600, marginTop: 3 }}>⏱ {t.startsIn} {countdown}</div>}
@@ -2690,11 +2805,11 @@ function SignupModal({ type, user, existing, lastSignup, onClose, onSave, t, isC
   };
 
   const handleSubmit = () => {
-    if (!form.power) { setError("Squad Power is required."); showToast?.("Squad Power is required."); return; }
-    if (!form.squadType) { setError("Squad Type is required."); showToast?.("Squad Type is required."); return; }
-    if (!form.availability) { setError("Please select your availability."); showToast?.("Please select your availability."); return; }
-    if (!form.timePreference) { setError("Please tick at least one time you can make."); showToast?.("Please tick at least one time."); return; }
-    if (showFlexQuestion && !form.canFlexTime) { setError("Please answer the time flexibility question."); showToast?.("Please answer the flex question."); return; }
+    if (!form.power) { setError(tr("Squad Power is required.")); showToast?.(tr("Squad Power is required.")); return; }
+    if (!form.squadType) { setError(tr("Squad Type is required.")); showToast?.(tr("Squad Type is required.")); return; }
+    if (!form.availability) { setError(tr("Please select your availability.")); showToast?.(tr("Please select your availability.")); return; }
+    if (!form.timePreference) { setError(tr("Please tick at least one time you can make.")); showToast?.(tr("Please tick at least one time.")); return; }
+    if (showFlexQuestion && !form.canFlexTime) { setError(tr("Please answer the time flexibility question.")); showToast?.(tr("Please answer the flex question.")); return; }
 setError("");
     onSave(showFlexQuestion ? form : { ...form, canFlexTime: "" });
   };
@@ -2703,20 +2818,20 @@ setError("");
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="modal-title">{isCanyon ? "🏔️ " + t.canyonStorm : "🏜️ " + t.desertStorm} Sign-Up</div>
+          <div className="modal-title">{isCanyon ? "🏔️ " + t.canyonStorm : "🏜️ " + t.desertStorm} {tr("Sign-Up")}</div>
           <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
           <div className="form-group">
             <label className="form-label">{t.squadPower} <span style={{color:"var(--red)"}}>*</span></label>
-            <input className="form-input" value={form.power} onChange={e => set("power", e.target.value)} onBlur={e => set("power", formatPowerInput(e.target.value))} placeholder="e.g. 4124 → 41.24" />
-            <div className="form-hint">Tip: type 4124 → it becomes 41.24 automatically</div>
+            <input className="form-input" value={form.power} onChange={e => set("power", e.target.value)} onBlur={e => set("power", formatPowerInput(e.target.value))} placeholder={tr("e.g. 4124 → 41.24")} />
+            <div className="form-hint">{tr("Tip: type 4124 → it becomes 41.24 automatically")}</div>
           </div>
           <div className="form-group">
             <label className="form-label">{t.squadType} <span style={{color:"var(--red)"}}>*</span></label>
             <select className="form-input form-select" value={form.squadType} onChange={e => set("squadType", e.target.value)}>
-              <option value="">— Select type —</option>
-              <option>Air</option><option>Tank</option><option>Missile</option>
+              <option value="">— {tr("Select type")} —</option>
+              {SQUAD_TYPES.map(st => <option key={st} value={st}>{tr(st)}</option>)}
             </select>
           </div>
           <div className="form-group">
@@ -2736,10 +2851,10 @@ setError("");
           {showFlexQuestion && (
             <div className="form-group">
               <div style={{ background: "rgba(201,140,40,0.08)", border: "1px solid var(--gold)", borderRadius: 10, padding: "12px 14px", marginBottom: 10, fontSize: 13, color: "var(--text-mid)", lineHeight: 1.6 }}>
-                ⚠️ If we don't get enough sign-ups for your preferred time slot, we will not run it. In the event this happens, can you switch time slots?
+                ⚠️ {tr("If we don't get enough sign-ups for your preferred time slot, we will not run it. In the event this happens, can you switch time slots?")}
               </div>
               <div className="radio-group">
-                {[["yes", "Yes, I can switch"], ["no", "No, I cannot switch"]].map(([val, label]) => (
+                {[["yes", tr("Yes, I can switch")], ["no", tr("No, I cannot switch")]].map(([val, label]) => (
                   <div key={val} className={`radio-option ${form.canFlexTime === val ? "selected" : ""}`} onClick={() => set("canFlexTime", val)}>
                     <div className="radio-dot"></div><span style={{ fontSize: 14 }}>{label}</span>
                   </div>
@@ -2761,7 +2876,7 @@ setError("");
 function TimePrefPicker({ value, offered, onChange, compact }) {
   const picked = value ? parseTimePref(value, offered).filter(x => offered.includes(x)) : [];
   const toggle = (tm) => onChange(sortTimes(picked.includes(tm) ? picked.filter(x => x !== tm) : [...picked, tm]).join(","));
-  if (!offered.length) return <div className="form-hint">No battle times set yet — ask an R4.</div>;
+  if (!offered.length) return <div className="form-hint">{tr("No battle times set yet — ask an R4.")}</div>;
   return (
     <div>
       <div className="radio-group">
@@ -2770,12 +2885,12 @@ function TimePrefPicker({ value, offered, onChange, compact }) {
           return (
             <div key={tm} role="checkbox" aria-checked={on} className={`radio-option ${on ? "selected" : ""}`} onClick={() => toggle(tm)}
               style={compact ? { padding: "9px 12px" } : undefined}>
-              <div className="check-box">{on ? "✓" : ""}</div><span style={{ fontSize: compact ? 13 : 14 }}>{tm} Server time</span>
+              <div className="check-box">{on ? "✓" : ""}</div><span style={{ fontSize: compact ? 13 : 14 }}>{tm} {tr("Server time")}</span>
             </div>
           );
         })}
       </div>
-      <div className="form-hint">Tick every time you can make.</div>
+      <div className="form-hint">{tr("Tick every time you can make.")}</div>
     </div>
   );
 }
@@ -2796,18 +2911,29 @@ const normalizePlan = (stored) => {
   return null;
 };
 
+// Text someone typed, shown in the reader's language
+function AutoText({ text }) {
+  const [out] = useAutoTranslate([text]);
+  return <span style={{ whiteSpace: "pre-wrap" }}>{out}</span>;
+}
+
 function PlanText({ text }) {
+  const lines = String(text || "").split("\n").map(raw => raw.trim()).filter(Boolean).map(line => {
+    if (line.startsWith("#")) return { heading: true, text: line.replace(/^#+\s*/, "") };
+    const bullet = /^[-•*›]\s*/.test(line);
+    return { bullet, text: line.replace(/^[-•*›]\s*/, "") };
+  });
+  // Plans are typed by R4s, so each line is auto-translated into the reader's language
+  const translated = useAutoTranslate(lines.map(l => l.text));
   const sections = [];
   let cur = null;
-  String(text || "").split("\n").forEach(raw => {
-    const line = raw.trim();
-    if (!line) return;
-    if (line.startsWith("#")) { cur = { title: line.replace(/^#+\s*/, ""), items: [] }; sections.push(cur); return; }
+  lines.forEach((l, i) => {
+    const txt = translated[i];
+    if (l.heading) { cur = { title: txt, items: [] }; sections.push(cur); return; }
     if (!cur) { cur = { title: "", items: [] }; sections.push(cur); }
-    const bullet = /^[-•*›]\s*/.test(line);
-    cur.items.push({ bullet, text: line.replace(/^[-•*›]\s*/, "") });
+    cur.items.push({ bullet: l.bullet, text: txt });
   });
-  if (!sections.length) return <div style={{ color: "var(--text-dim)", fontSize: 14 }}>No battle plan yet.</div>;
+  if (!sections.length) return <div style={{ color: "var(--text-dim)", fontSize: 14 }}>{tr("No battle plan yet.")}</div>;
   const colors = ["var(--gold)", "var(--blue)", "var(--blue)", "var(--red)", "var(--purple)", "var(--green)"];
   return (
     <div>
@@ -2879,13 +3005,13 @@ function BattlePlansPage({ user, csTeams, dsTeams, t, stormSettings, isR4, battl
   return (
     <div>
       <h1 className="section-title">{t.battlePlans}</h1>
-      <p className="section-sub">Your assignments and battle strategy</p>
+      <p className="section-sub">{tr("Your assignments and battle strategy")}</p>
       <div className="tabs">
-        {showCanyon && <button className={`tab ${tab === "canyon" ? "active" : ""}`} onClick={() => setTab("canyon")}>🏔️ {t.canyonStorm}{!canyonActive && isR4 && <span style={{ fontSize: 10, marginLeft: 5, opacity: 0.6 }}>(off-season)</span>}</button>}
+        {showCanyon && <button className={`tab ${tab === "canyon" ? "active" : ""}`} onClick={() => setTab("canyon")}>🏔️ {t.canyonStorm}{!canyonActive && isR4 && <span style={{ fontSize: 10, marginLeft: 5, opacity: 0.6 }}>({tr("off-season")})</span>}</button>}
         <button className={`tab ${tab === "desert" ? "active" : ""}`} onClick={() => setTab("desert")}>🏜️ {t.desertStorm}</button>
       </div>
-      {tab === "canyon" && showCanyon && <BattlePlanView key="canyon" data={csData} weekKey={csWeek} type="canyon" user={user} mapSrc={battlePlans?.canyon?.map || CS_MAP} mapAlt="Canyon Storm map" plan={CS_PLAN} notes={CS_NOTES} customPlan={normalizeWeekPlan(csData?.plan)} isR4={isR4} saveBattlePlan={saveBattlePlan} showToast={showToast} t={t} />}
-      {tab === "desert" && <BattlePlanView key="desert" data={dsData} weekKey={dsWeek} type="desert" user={user} mapSrc={battlePlans?.desert?.map || DS_MAP} mapAlt="Desert Storm map" plan={DS_PLAN} notes={DS_NOTES} customPlan={normalizeWeekPlan(dsData?.plan)} isR4={isR4} saveBattlePlan={saveBattlePlan} showToast={showToast} t={t} />}
+      {tab === "canyon" && showCanyon && <BattlePlanView key="canyon" data={csData} weekKey={csWeek} type="canyon" user={user} mapSrc={battlePlans?.canyon?.map || CS_MAP} mapAlt={tr("Canyon Storm map")} plan={CS_PLAN} notes={CS_NOTES} customPlan={normalizeWeekPlan(csData?.plan)} isR4={isR4} saveBattlePlan={saveBattlePlan} showToast={showToast} t={t} />}
+      {tab === "desert" && <BattlePlanView key="desert" data={dsData} weekKey={dsWeek} type="desert" user={user} mapSrc={battlePlans?.desert?.map || DS_MAP} mapAlt={tr("Desert Storm map")} plan={DS_PLAN} notes={DS_NOTES} customPlan={normalizeWeekPlan(dsData?.plan)} isR4={isR4} saveBattlePlan={saveBattlePlan} showToast={showToast} t={t} />}
     </div>
   );
 }
@@ -2930,13 +3056,13 @@ function BattlePlanView({ data, weekKey, type, user, mapSrc, mapAlt, plan, notes
       {mine ? (
         <div style={{ background: "var(--surface2)", border: "1.5px solid var(--gold-pale)", borderRadius: 12, padding: 20, marginBottom: 20 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>{t.yourAssignment}</div>
-          <div style={{ fontSize: 22, fontWeight: 700 }}>Team {mine.team} • {mine.slot}</div>
+          <div style={{ fontSize: 22, fontWeight: 700 }}>{tr("Team")} {mine.team} • {mine.slot}</div>
           <div style={{ fontSize: 15, color: "var(--text-mid)", marginTop: 4 }}>{t.battleTime}: <strong>{mine.time}</strong> {t.serverTime}</div>
-          {weekKey && <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 2 }}>📅 {new Date(weekKey).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })}</div>}
+          {weekKey && <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 2 }}>📅 {new Date(weekKey).toLocaleDateString(dateLocale(), { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })}</div>}
         </div>
       ) : (
         <div style={{ background: "var(--surface2)", borderRadius: 12, padding: 20, marginBottom: 20, textAlign: "center", color: "var(--text-dim)" }}>
-          No assignment yet. Check back after teams are finalized.
+          {tr("No assignment yet. Check back after teams are finalized.")}
         </div>
       )}
 
@@ -2964,7 +3090,7 @@ function BattlePlanView({ data, weekKey, type, user, mapSrc, mapAlt, plan, notes
 
             return (
               <div key={teamKey} style={{ marginBottom: 14 }}>
-                <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 14, color }}>⚔️ Team {teamLabel} — {time} {t.serverTime}</div>
+                <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 14, color }}>⚔️ {tr("Team")} {teamLabel} — {time} {t.serverTime}</div>
                 {isNewFormat ? (() => {
                   const slotData = data.slotData || {};
                   const bySlot = {};
@@ -2999,7 +3125,7 @@ function BattlePlanView({ data, weekKey, type, user, mapSrc, mapAlt, plan, notes
                       ))}
                       {subs.length > 0 && (
                         <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", background: "var(--surface2)", borderRadius: 8, borderLeft: `3px solid var(--text-dim)` }}>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-dim)", minWidth: 52, textTransform: "uppercase", letterSpacing: 0.3 }}>Subs</span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-dim)", minWidth: 52, textTransform: "uppercase", letterSpacing: 0.3 }}>{tr("Subs")}</span>
                           <span style={{ fontSize: 12, color: "var(--text-mid)" }}>→</span>
                           <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                             {subs.map((p, j) => (
@@ -3066,9 +3192,9 @@ function BattlePlanView({ data, weekKey, type, user, mapSrc, mapAlt, plan, notes
             return (
               <div key={team} className="card" style={{ marginBottom: 16 }}>
                 <div style={{ background: col, color: "#fff", padding: "10px 14px", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 700, fontSize: 15 }}>⚔️ Team {team} plan</span>
-                  {time && <span style={{ fontSize: 12, opacity: 0.9 }}>{time} server</span>}
-                  {mine?.team === team && <span style={{ marginLeft: "auto", background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "2px 9px", fontSize: 11, fontWeight: 700 }}>⭐ Your team</span>}
+                  <span style={{ fontWeight: 700, fontSize: 15 }}>⚔️ {tr("Team {team} plan", { team })}</span>
+                  {time && <span style={{ fontSize: 12, opacity: 0.9 }}>{time} {tr("server")}</span>}
+                  {mine?.team === team && <span style={{ marginLeft: "auto", background: "rgba(255,255,255,0.25)", borderRadius: 999, padding: "2px 9px", fontSize: 11, fontWeight: 700 }}>⭐ {tr("Your team")}</span>}
                 </div>
                 <div className="card-body"><PlanText text={team === "A" ? customPlan.a : customPlan.b} /></div>
               </div>
@@ -3080,10 +3206,10 @@ function BattlePlanView({ data, weekKey, type, user, mapSrc, mapAlt, plan, notes
       <div style={{ marginBottom: 20 }}>
         {plan.map((phase, i) => (
           <div key={i} style={{ marginBottom: 16, borderLeft: `3px solid ${phase.color}`, paddingLeft: 14 }}>
-            <div style={{ fontWeight: 700, fontSize: 15, color: phase.color, marginBottom: 8 }}>{phase.time}</div>
+            <div style={{ fontWeight: 700, fontSize: 15, color: phase.color, marginBottom: 8 }}>{tr(phase.time)}</div>
             {phase.steps.map((step, j) => (
               <div key={j} style={{ fontSize: 14, color: "var(--text-mid)", marginBottom: 6, lineHeight: 1.5, display: "flex", gap: 8 }}>
-                <span style={{ color: phase.color, flexShrink: 0 }}>›</span><span>{step}</span>
+                <span style={{ color: phase.color, flexShrink: 0 }}>›</span><span>{tr(step)}</span>
               </div>
             ))}
           </div>
@@ -3095,7 +3221,7 @@ function BattlePlanView({ data, weekKey, type, user, mapSrc, mapAlt, plan, notes
         <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10 }}>📋 {t.notesReminders}</div>
         {notes.map((n, i) => (
           <div key={i} style={{ fontSize: 13, color: "var(--text-mid)", marginBottom: 8, lineHeight: 1.5, display: "flex", gap: 8 }}>
-            <span style={{ color: "var(--gold)", flexShrink: 0 }}>•</span><span>{n}</span>
+            <span style={{ color: "var(--gold)", flexShrink: 0 }}>•</span><span>{tr(n)}</span>
           </div>
         ))}
       </div>
@@ -3146,23 +3272,23 @@ function BattleMapPicker({ type, showToast }) {
     setBusy(true);
     const ok = await savePlan(type, map ? { ...(stored || {}), map } : (stored && Object.keys(stored).some(k => k !== "map") ? { ...stored, map: null } : null));
     setBusy(false);
-    if (ok) showToast(map ? "Battle map updated ✓" : "Using the original map");
+    if (ok) showToast(map ? tr("Battle map updated ✓") : tr("Using the original map"));
   };
   const onFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try { await setMap(await resizeImageToDataUrl(file)); }
-    catch { showToast("Couldn't read that image — try a JPG or PNG."); }
+    catch { showToast(tr("Couldn't read that image — try a JPG or PNG.")); }
   };
   return (
     <div>
-      <img src={stored?.map || defaultMap} alt="Battle map" style={{ width: "100%", maxHeight: 170, objectFit: "contain", background: "#0b0907", borderRadius: 10, display: "block", marginBottom: 8 }} />
+      <img src={stored?.map || defaultMap} alt={tr("Battle map")} style={{ width: "100%", maxHeight: 170, objectFit: "contain", background: "#0b0907", borderRadius: 10, display: "block", marginBottom: 8 }} />
       <div className="row wrap" style={{ gap: 8 }}>
         <label className="btn btn-sm btn-secondary" style={{ cursor: busy ? "default" : "pointer" }}>
-          📷 Change map image
+          📷 {tr("Change map image")}
           <input type="file" accept="image/*" onChange={onFile} disabled={busy} style={{ display: "none" }} />
         </label>
-        {stored?.map && <button className="btn btn-sm btn-ghost" disabled={busy} onClick={() => setMap(null)}>Use original map</button>}
+        {stored?.map && <button className="btn btn-sm btn-ghost" disabled={busy} onClick={() => setMap(null)}>{tr("Use original map")}</button>}
       </div>
     </div>
   );
@@ -3266,7 +3392,7 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
     const professionChanged = form.profession !== me.profession;
     const oldBuddy = professionChanged ? me.buddy : null;
     if (oldBuddy) {
-      if (!window.confirm("Changing your profession removes your buddy pairing. Continue?")) return;
+      if (!window.confirm(tr("Changing your profession removes your buddy pairing. Continue?"))) return;
       if (!(await unpairBuddy(user.id, { silent: true }))) return;
     }
     const updated = { ...user, ...form, buddy: oldBuddy ? null : (me.buddy || null) };
@@ -3280,19 +3406,19 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
     setLang(form.language);
     setEditing(false);
     try { localStorage.setItem("wild_session", JSON.stringify({ userId: updated.id, language: updated.language })); } catch {}
-    showToast(oldBuddy ? "Profile updated ✓ — buddy pairing removed" : "Profile updated ✓");
+    showToast(oldBuddy ? tr("Profile updated ✓ — buddy pairing removed") : tr("Profile updated ✓"));
   };
 
   const changePassword = async () => {
-    if (pwForm.current !== user.password) { setPwError("Current password is incorrect."); return; }
-    if (pwForm.newPw !== pwForm.confirm) { setPwError("New passwords do not match."); return; }
+    if (pwForm.current !== user.password) { setPwError(tr("Current password is incorrect.")); return; }
+    if (pwForm.newPw !== pwForm.confirm) { setPwError(tr("New passwords do not match.")); return; }
     const updated = { ...user, password: pwForm.newPw };
     setUser(updated);
     setMembers(m => m.map(mb => mb.id === user.id ? updated : mb));
     await supabase.from("members").update({ password_hash: pwForm.newPw }).eq("id", user.id);
     try { localStorage.setItem("wild_session", JSON.stringify({ userId: updated.id, language: updated.language })); } catch {}
     setPwError(""); setPwForm({ current: "", newPw: "", confirm: "" });
-    showToast("Password changed ✓");
+    showToast(tr("Password changed ✓"));
   };
 
   const maxPower = Math.max(...history.map(h => h.power), 1);
@@ -3313,7 +3439,7 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
         <div className="card-body">
           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-mid)", marginBottom: 10 }}>🌐 {t.language}</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {[["en","🇺🇸 EN"],["it","🇮🇹 IT"],["fr","🇫🇷 FR"],["sv","🇸🇪 SV"],["tr","🇹🇷 TR"]].map(([code, label]) => (
+            {[["en","🇺🇸 EN"],["de","🇩🇪 DE"],["it","🇮🇹 IT"],["fr","🇫🇷 FR"],["sv","🇸🇪 SV"],["tr","🇹🇷 TR"]].map(([code, label]) => (
               <button key={code}
                 className={`sort-chip ${user.language === code ? "active" : ""}`}
                 onClick={() => {
@@ -3322,7 +3448,8 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
                   setMembers(m => m.map(mb => mb.id === user.id ? updated : mb));
                   setLang(code);
                   try { localStorage.setItem("wild_session", JSON.stringify({ userId: updated.id, language: code })); } catch {}
-                  showToast("Language updated ✓");
+                  setI18nLang(code);
+                  showToast(tr("Language updated ✓"));
                 }}>
                 {label}
               </button>
@@ -3337,7 +3464,7 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
           <div className="card-body">
             <div className="form-group"><label className="form-label">{t.username}</label><input className="form-input" value={form.username} onChange={e => set("username", e.target.value)} /></div>
             <div className="form-group"><label className="form-label">{t.profession}</label><select className="form-input form-select" value={form.profession} onChange={e => set("profession", e.target.value)}><option value="engineer">{t.engineer}</option><option value="warLeader">{t.warLeader}</option></select></div>
-            <div className="form-group"><label className="form-label">{t.language}</label><select className="form-input form-select" value={form.language} onChange={e => set("language", e.target.value)}><option value="en">English</option><option value="it">Italiano</option><option value="fr">Français</option><option value="sv">Svenska</option><option value="tr">Türkçe</option></select></div>
+            <div className="form-group"><label className="form-label">{t.language}</label><select className="form-input form-select" value={form.language} onChange={e => set("language", e.target.value)}>{LANGUAGE_OPTIONS.map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></div>
             <div className="row" style={{ gap: 8, marginTop: 8 }}>
               <button className="btn btn-primary" onClick={saveProfile}>{t.save}</button>
               <button className="btn btn-secondary" onClick={() => setEditing(false)}>{t.cancel}</button>
@@ -3347,11 +3474,11 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
       ) : (
         <div className="card" style={{ marginBottom: 16 }}>
           <div className="card-header">
-            <div className="card-title">Profile Info</div>
+            <div className="card-title">{t.profileInfo}</div>
             <button className="btn btn-sm btn-secondary" onClick={() => setEditing(true)}>{t.editProfile}</button>
           </div>
           <div className="card-body">
-            <div className="row-between" style={{ marginBottom: 10 }}><span style={{ color: "var(--text-dim)", fontSize: 14 }}>{t.language}</span><span style={{ fontWeight: 600 }}>{{ en: "English", it: "Italiano", fr: "Français", sv: "Svenska", tr: "Türkçe" }[user.language]}</span></div>
+            <div className="row-between" style={{ marginBottom: 10 }}><span style={{ color: "var(--text-dim)", fontSize: 14 }}>{t.language}</span><span style={{ fontWeight: 600 }}>{Object.fromEntries(LANGUAGE_OPTIONS)[user.language]}</span></div>
             <div className="row-between"><span style={{ color: "var(--text-dim)", fontSize: 14 }}>{t.role}</span><span className="badge badge-gold">{user.role.toUpperCase()}</span></div>
           </div>
         </div>
@@ -3364,19 +3491,19 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
         const pctColor = stats.pct == null ? "var(--text-dim)" : stats.pct >= 80 ? "var(--green)" : stats.pct >= 50 ? "var(--gold)" : "var(--red)";
         return (
           <div className="card" style={{ marginBottom: 16 }}>
-            <div className="card-header"><div className="card-title">⚔️ Storm Participation</div></div>
+            <div className="card-header"><div className="card-title">⚔️ {tr("Storm Participation")}</div></div>
             <div className="card-body">
               <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 16 }}>
                 <div style={{ textAlign: "center" }}>
                   <div style={{ fontSize: 42, fontWeight: 800, color: pctColor, lineHeight: 1 }}>{stats.pct}%</div>
-                  <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 4 }}>Team Rate</div>
+                  <div style={{ fontSize: 11, color: "var(--text-dim)", marginTop: 4 }}>{tr("Team Rate")}</div>
                 </div>
                 <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {[
-                    { label: "Sign-Ups", val: stats.signedUp, color: "var(--text)" },
-                    { label: "Made Team", val: stats.madeTeam, color: "var(--green)" },
-                    { label: "Waitlisted", val: stats.waitlisted, color: "var(--gold)" },
-                    { label: "Missed", val: stats.missed, color: "var(--text-dim)" },
+                    { label: tr("Sign-Ups"), val: stats.signedUp, color: "var(--text)" },
+                    { label: tr("Made Team"), val: stats.madeTeam, color: "var(--green)" },
+                    { label: tr("Waitlisted"), val: stats.waitlisted, color: "var(--gold)" },
+                    { label: tr("Missed"), val: stats.missed, color: "var(--text-dim)" },
                   ].map(({ label, val, color }) => (
                     <div key={label} style={{ background: "var(--bg)", borderRadius: 8, padding: "8px 10px" }}>
                       <div style={{ fontSize: 18, fontWeight: 700, color }}>{val}</div>
@@ -3418,7 +3545,7 @@ function ProfilePage({ user, setUser, members, setMembers, t, setLang, showToast
       <div className="card">
         <div className="card-header"><div className="card-title">🔒 {t.changePassword}</div></div>
         <div className="card-body">
-          <div className="form-group"><label className="form-label">Current Password</label><input className="form-input" type="password" value={pwForm.current} onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))} /></div>
+          <div className="form-group"><label className="form-label">{tr("Current Password")}</label><input className="form-input" type="password" value={pwForm.current} onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))} /></div>
           <div className="form-group"><label className="form-label">{t.newPassword}</label><input className="form-input" type="password" value={pwForm.newPw} onChange={e => setPwForm(f => ({ ...f, newPw: e.target.value }))} /></div>
           <div className="form-group"><label className="form-label">{t.confirmPassword}</label><input className="form-input" type="password" value={pwForm.confirm} onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))} /></div>
           {pwError && <p style={{ color: "var(--red)", fontSize: 13, marginBottom: 12 }}>{pwError}</p>}
@@ -3448,7 +3575,7 @@ function EditSignupModal({ signup, type, memberName, onClose, onSave, t }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="modal-title">✏️ Edit Sign-Up — {memberName}</div>
+          <div className="modal-title">✏️ {tr("Edit Sign-Up")} — {memberName}</div>
           <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
@@ -3460,12 +3587,12 @@ function EditSignupModal({ signup, type, memberName, onClose, onSave, t }) {
                 const num = parseInt(clean, 10);
                 if (!isNaN(num)) set("power", (num / 100).toFixed(2));
               }
-            }} placeholder="e.g. 7250 → 72.50" />
+            }} placeholder={tr("e.g. 7250 → 72.50")} />
           </div>
           <div className="form-group">
             <label className="form-label">{t.squadType}</label>
             <select className="form-input form-select" value={form.squadType} onChange={e => set("squadType", e.target.value)}>
-              <option>Air</option><option>Tank</option><option>Missile</option>
+              {SQUAD_TYPES.map(st => <option key={st} value={st}>{tr(st)}</option>)}
             </select>
           </div>
           <div className="form-group">
@@ -3544,11 +3671,11 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
     let next;
     if (planTeam === "A") next = cur.same ? { same: true, a: planText, b: planText } : { same: false, a: planText, b: cur.b };
     else next = planSame ? { same: true, a: cur.a, b: cur.a } : { same: false, a: cur.a, b: planText };
-    if (await onPatchWeek({ plan: next })) { showToast(`Team ${planTeam} plan saved for this week ✓`); setPlanTeam(null); }
+    if (await onPatchWeek({ plan: next })) { showToast(tr("Team {team} plan saved for this week ✓", { team: planTeam })); setPlanTeam(null); }
   };
   const resetPlan = async () => {
-    if (!window.confirm("Reset this week's battle plan to the original for BOTH teams?")) return;
-    if (await onPatchWeek({ plan: null })) { showToast("Plan reset to the original for this week"); setPlanTeam(null); }
+    if (!window.confirm(tr("Reset this week's battle plan to the original for BOTH teams?"))) return;
+    if (await onPatchWeek({ plan: null })) { showToast(tr("Plan reset to the original for this week")); setPlanTeam(null); }
   };
   const { plans: battlePlansCfg } = useStormConfig();
   const battleMapSrc = battlePlansCfg?.[tab]?.map || (tab === "canyon" ? CS_MAP : DS_MAP);
@@ -3559,7 +3686,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
     const clean = Object.fromEntries(Object.entries(capsDraft).map(([k, v]) => { const n = parseInt(v, 10); return [k, Math.max(0, Math.min(20, isNaN(n) ? 0 : n))]; }));
     const full = (tk) => Object.fromEntries(slots.map(sl => [sl, getSlotCap(sl, tk)])); // keeps the other team's current spots
     const next = { teamA: capsTeam === "teamA" ? clean : full("teamA"), teamB: capsTeam === "teamB" ? clean : full("teamB") };
-    if (await onPatchWeek({ slotCaps: next })) { showToast(`Team ${capsTeam === "teamA" ? "A" : "B"} spots saved ✓`); setCapsTeam(null); }
+    if (await onPatchWeek({ slotCaps: next })) { showToast(tr("Team {team} spots saved ✓", { team: capsTeam === "teamA" ? "A" : "B" })); setCapsTeam(null); }
   };
   const countSlot = (teamKey, slotName) => {
     const members = getTeamMembers(histTeams?.[teamKey]);
@@ -3608,7 +3735,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
 
   const renderTeam = (teamKey, teamLabel, color, sort) => {
     const members = sortMembers(getTeamMembers(histTeams?.[teamKey]), sort);
-    if (members.length === 0) return <div style={{ color: "var(--text-dim)", fontSize: 13, marginBottom: 16 }}>No Team {teamLabel} members.</div>;
+    if (members.length === 0) return <div style={{ color: "var(--text-dim)", fontSize: 13, marginBottom: 16 }}>{tr("No Team {team} members.", { team: teamLabel })}</div>;
 
     // Count starters and subs
     const starterCount = members.filter(m => (weekSlotData[m.userId || m.name]?.role) === "starter").length;
@@ -3621,18 +3748,18 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
         {/* Sticky team header — pinned under the top bar while scrolling this team */}
         <div className="team-sticky" style={{ borderBottom: `2px solid ${color}` }}>
         <div style={{ fontWeight: 700, marginBottom: 6, color, fontSize: 15 }}>
-          Team {teamLabel} — {teamKey === "teamA" ? histTeams?.timeA : histTeams?.timeB} {t.serverTime}
-          <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 400, color: "var(--text-dim)" }}>{members.length} members</span>
+          {tr("Team")} {teamLabel} — {teamKey === "teamA" ? histTeams?.timeA : histTeams?.timeB} {t.serverTime}
+          <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 400, color: "var(--text-dim)" }}>{tr("{n} members", { n: members.length })}</span>
         </div>
         {/* Starters · Subs · Spots · Map · Plan — always one row */}
         <div className="team-pills">
-          <span className={`badge ${starterOver ? "badge-red" : "badge-green"}`}>Starters {starterCount}/20{starterOver ? " ⚠️" : ""}</span>
-          <span className={`badge ${subOver ? "badge-red" : "badge-gold"}`}>Subs {subCount}/10{subOver ? " ⚠️" : ""}</span>
-          <button type="button" className="badge badge-blue" onClick={() => openCaps(teamKey)} title={`Spots per assignment for Team ${teamLabel}`}>👥 Spots</button>
-          <button type="button" className="badge badge-blue" onClick={() => setMapOpen(true)} title="Battle map">🗺️ Map</button>
+          <span className={`badge ${starterOver ? "badge-red" : "badge-green"}`}>{tr("Starters")} {starterCount}/20{starterOver ? " ⚠️" : ""}</span>
+          <span className={`badge ${subOver ? "badge-red" : "badge-gold"}`}>{tr("Subs")} {subCount}/10{subOver ? " ⚠️" : ""}</span>
+          <button type="button" className="badge badge-blue" onClick={() => openCaps(teamKey)} title={tr("Spots per assignment for Team {team}", { team: teamLabel })}>👥 {tr("Spots")}</button>
+          <button type="button" className="badge badge-blue" onClick={() => setMapOpen(true)} title={tr("Battle map")}>🗺️ {tr("Map")}</button>
           <button type="button" className="badge badge-blue" onClick={() => openPlan(teamLabel)}
-            title={teamLabel === "B" && (!weekPlan || weekPlan.same) ? "Team B uses Team A's plan — tap to change" : `Team ${teamLabel} battle plan`}>
-            📝 Plan{teamLabel === "B" && (!weekPlan || weekPlan.same) ? <sup className="same-a">=A</sup> : null}
+            title={teamLabel === "B" && (!weekPlan || weekPlan.same) ? tr("Team B uses Team A's plan — tap to change") : tr("Team {team} battle plan", { team: teamLabel })}>
+            📝 {tr("Plan")}{teamLabel === "B" && (!weekPlan || weekPlan.same) ? <sup className="same-a">=A</sup> : null}
           </button>
         </div>
         </div>
@@ -3647,7 +3774,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
               <col style={{ width: 22 }} />
             </colgroup>
             <thead><tr>
-              {[["name","Player"],["pwr","Pwr"],["type","Type"],["slot","Assign"],["role","Role"]].map(([col,label]) => (
+              {[["name",tr("Player")],["pwr",tr("Pwr")],["type",tr("Type")],["slot",tr("Assign")],["role",tr("Role")]].map(([col,label]) => (
                 <th key={col} style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort(teamKey, col)}>
                   {label}{sort.col === col ? (sort.dir === "asc" ? "↑" : "↓") : ""}
                 </th>
@@ -3662,10 +3789,10 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
                 const sig = signups?.find(s => String(s.userId) === String(uid));
                 const pwr = m.power || sig?.power || "";
                 const type = m.squadType || sig?.squadType || "";
-                const typeShort = { Air: "Air", Tank: "Tnk", Missile: "Msl" }[type] || (type ? type.slice(0, 3) : "—");
-                const status = avail === "confirmed" ? { txt: "✓", c: "var(--green)", tip: "Confirmed" }
-                  : avail === "sub" ? { txt: "S", c: "var(--gold)", tip: "Signed up as sub" }
-                  : avail === "cantMake" ? { txt: "✗", c: "var(--red)", tip: "Can't make" } : null;
+                const typeShort = { Air: tr("Air"), Tank: tr("Tnk"), Missile: tr("Msl") }[type] || (type ? type.slice(0, 3) : "—");
+                const status = avail === "confirmed" ? { txt: "✓", c: "var(--green)", tip: tr("Confirmed") }
+                  : avail === "sub" ? { txt: "S", c: "var(--gold)", tip: tr("Signed up as sub") }
+                  : avail === "cantMake" ? { txt: "✗", c: "var(--red)", tip: tr("Can't make") } : null;
                 const stripe = i % 2 === 0 ? "transparent" : "var(--surface2)";
                 const selectedSlot = sd.slot || m.slot || "";
                 const slotCap = selectedSlot ? getSlotCap(selectedSlot, teamKey) : null;
@@ -3679,25 +3806,25 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
                       {m.name || getName(m.userId)}
                     </td>
                     <td style={{ fontSize: 11 }}>{pwr || "—"}</td>
-                    <td style={{ fontSize: 10, color: "var(--text-dim)" }} title={type}>{typeShort}</td>
+                    <td style={{ fontSize: 10, color: "var(--text-dim)" }} title={tr(type)}>{typeShort}</td>
                     <td style={{ overflow: "visible" }}>
                       <select className="slot-pick" style={slotFull ? { borderColor: "var(--red)" } : undefined}
-                        value={selectedSlot} aria-label={`Assignment for ${m.name || getName(m.userId)}`}
+                        value={selectedSlot} aria-label={tr("Assignment for {name}", { name: m.name || getName(m.userId) })}
                         onChange={e => setSlot(uid, "slot", e.target.value)}>
                         <option value="">—</option>
                         {slots.map(sl => {
                           const cap = getSlotCap(sl, teamKey);
                           const cnt = countSlot(teamKey, sl);
                           if (cap === 0 && sl !== selectedSlot && cnt === 0) return null; // assignment not used this week
-                          if (cap === 0) return <option key={sl} value={sl} disabled={sl !== selectedSlot}>{shortSlot(sl)} (off)</option>;
+                          if (cap === 0) return <option key={sl} value={sl} disabled={sl !== selectedSlot}>{shortSlot(sl)} ({tr("off")})</option>;
                           const full = sl !== selectedSlot && cnt >= cap;
                           return <option key={sl} value={sl} disabled={full}>{shortSlot(sl)} {cnt}/{cap}</option>;
                         })}
                       </select>
                     </td>
                     <td style={{ overflow: "visible" }}>
-                      <div className="team-seg" role="group" aria-label="Role">
-                        {[["starter","St","Starter"],["sub","Sub","Sub"]].map(([v, lbl, tip]) => (
+                      <div className="team-seg" role="group" aria-label={tr("Role")}>
+                        {[["starter",tr("St"),tr("Starter")],["sub",tr("Sub"),tr("Sub")]].map(([v, lbl, tip]) => (
                           <button key={v} type="button" title={tip} style={{ fontSize: 10 }}
                             className={sd.role === v ? `on-${v}` : ""} aria-pressed={sd.role === v}
                             onClick={() => setSlot(uid, "role", sd.role === v ? "" : v)}>{lbl}</button>
@@ -3705,7 +3832,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
                       </div>
                     </td>
                     <td style={{ textAlign: "center", overflow: "visible" }}>
-                      <button type="button" aria-label="Remove from team" title="Remove from team"
+                      <button type="button" aria-label={tr("Remove from team")} title={tr("Remove from team")}
                         style={{ background: "none", border: "none", padding: 0, color: "var(--red)", fontSize: 14, fontWeight: 700, cursor: "pointer" }}
                         onClick={() => onRemove && onRemove(uid, teamKey)}>✕</button>
                     </td>
@@ -3761,7 +3888,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
     const buildTeamRows = (teamKey, label, time, fill) => {
       const rows = [];
       rows.push([{ v: `⚔️ ${label} ⚔️`, s: { font: { bold: true, sz: 13 }, fill: { patternType: "solid", ...fill } } }, "", "", ""]);
-      rows.push([{ v: `⏰ ${time || "TBD"} server time`, s: { font: BOLD } }, "", "", ""]);
+      rows.push([{ v: `⏰ ${time || tr("TBD")} ${tr("server time")}`, s: { font: BOLD } }, "", "", ""]);
       teamSlots.forEach(slot => {
         const p = getPlayers(teamKey, slot);
         if (getSlotCap(slot, teamKey) === 0 && p.length === 0) return; // not used this week
@@ -3774,20 +3901,20 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
       });
       const floaters = getPlayers(teamKey, "Floater");
       Array.from({ length: Math.max(getSlotCap("Floater", teamKey), floaters.length) }, (_, i) => i).forEach(i => {
-        rows.push([{ v: `Floater ${i + 1}:`, s: { font: BOLD } }, { v: floaters[i] || "—" }, "", ""]);
+        rows.push([{ v: `${tr("Floater")} ${i + 1}:`, s: { font: BOLD } }, { v: floaters[i] || "—" }, "", ""]);
       });
       const subs = getSubs(teamKey);
-      if (subs.length > 0) rows.push([{ v: "Subs:", s: { font: BOLD } }, { v: subs.join(", ") }, "", ""]);
+      if (subs.length > 0) rows.push([{ v: tr("Subs") + ":", s: { font: BOLD } }, { v: subs.join(", ") }, "", ""]);
       rows.push(["", "", "", ""]);
       return rows;
     };
 
-    const title = isCanyon ? "🏔️ Canyon Storm — Team Assignments" : "🏜️ Desert Storm — Team Assignments";
+    const title = (isCanyon ? "🏔️ Canyon Storm — " : "🏜️ Desert Storm — ") + tr("Team Assignments");
     const allRows = [
       [{ v: title, s: { font: { bold: true, sz: 14 } } }],
       [""],
-      ...buildTeamRows("teamA", "Team A", histTeams?.timeA, { patternType: "solid", fgColor: { rgb: "FFFF00" } }),
-      ...buildTeamRows("teamB", "Team B", histTeams?.timeB, { patternType: "solid", fgColor: { rgb: "92D050" } }),
+      ...buildTeamRows("teamA", tr("Team") + " A", histTeams?.timeA, { patternType: "solid", fgColor: { rgb: "FFFF00" } }),
+      ...buildTeamRows("teamB", tr("Team") + " B", histTeams?.timeB, { patternType: "solid", fgColor: { rgb: "92D050" } }),
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(allRows);
@@ -3795,7 +3922,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
     XLSX.utils.book_append_sheet(wb, ws, "Teams");
 
     XLSX.writeFile(wb, `${isCanyon ? "canyon" : "desert"}-teams-${view}.xlsx`);
-    showToast("Excel exported! 📊");
+    showToast(tr("Excel exported! 📊"));
   };
 
   const exportWeekCSV = () => {
@@ -3818,25 +3945,25 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
     const blob = new Blob([lines.join("\n")], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const el = document.createElement("a"); el.href = url; el.download = `${tab}-${view}.csv`; el.click();
-    showToast("Exported!");
+    showToast(tr("Exported!"));
   };
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <button className="btn btn-ghost btn-sm" onClick={onBack}>← Back</button>
+        <button className="btn btn-ghost btn-sm" onClick={onBack}>← {tr("Back")}</button>
         <div className="row" style={{ gap: 8 }}>
           <button className="btn btn-sm btn-secondary" onClick={exportWeekCSV}>⬇️ CSV</button>
-          <button className="btn btn-sm btn-secondary" onClick={exportExcel}>📊 Export Teams</button>
-          <button className="btn btn-sm btn-primary" onClick={() => onSave(weekSlotData, weekAttendance)}>💾 Save</button>
+          <button className="btn btn-sm btn-secondary" onClick={exportExcel}>📊 {tr("Export Teams")}</button>
+          <button className="btn btn-sm btn-primary" onClick={() => onSave(weekSlotData, weekAttendance)}>💾 {tr("Save")}</button>
         </div>
       </div>
-      <h3 style={{ fontWeight: 700, marginBottom: 16 }}>{tab === "canyon" ? "🏔️" : "🏜️"} Battle — {formatDate(view)}</h3>
+      <h3 style={{ fontWeight: 700, marginBottom: 16 }}>{tab === "canyon" ? "🏔️" : "🏜️"} {tr("Battle")} — {formatDate(view)}</h3>
       {mapOpen && (
         <div className="modal-overlay" onClick={() => setMapOpen(false)} style={{ alignItems: "flex-start", paddingTop: 20 }}>
           <div style={{ width: "100%", maxWidth: 700, position: "relative" }} onClick={e => e.stopPropagation()}>
-            <button onClick={() => setMapOpen(false)} aria-label="Close map" style={{ position: "absolute", top: 8, right: 8, background: "rgba(0,0,0,0.6)", color: "white", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", fontSize: 16, zIndex: 10 }}>✕</button>
-            <img src={battleMapSrc} alt={`${tab === "canyon" ? "Canyon" : "Desert"} Storm map`} style={{ width: "100%", borderRadius: 12, display: "block" }} />
+            <button onClick={() => setMapOpen(false)} aria-label={tr("Close map")} style={{ position: "absolute", top: 8, right: 8, background: "rgba(0,0,0,0.6)", color: "white", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", fontSize: 16, zIndex: 10 }}>✕</button>
+            <img src={battleMapSrc} alt={tab === "canyon" ? tr("Canyon Storm map") : tr("Desert Storm map")} style={{ width: "100%", borderRadius: 12, display: "block" }} />
           </div>
         </div>
       )}
@@ -3844,34 +3971,34 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
         <div className="modal-overlay" onClick={() => setPlanTeam(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title">📝 {tab === "canyon" ? "Canyon" : "Desert"} — Team {planTeam} plan</div>
-              <button className="btn btn-ghost btn-sm" onClick={() => setPlanTeam(null)} aria-label="Close">✕</button>
+              <div className="modal-title">📝 {tab === "canyon" ? "Canyon" : "Desert"} — {tr("Team {team} plan", { team: planTeam })}</div>
+              <button className="btn btn-ghost btn-sm" onClick={() => setPlanTeam(null)} aria-label={tr("Close")}>✕</button>
             </div>
             <div className="modal-body">
-              <img src={battleMapSrc} alt={`${tab === "canyon" ? "Canyon" : "Desert"} Storm map`} onClick={() => setPlanMapBig(b => !b)}
+              <img src={battleMapSrc} alt={tab === "canyon" ? tr("Canyon Storm map") : tr("Desert Storm map")} onClick={() => setPlanMapBig(b => !b)}
                 style={{ width: "100%", maxHeight: planMapBig ? "none" : 170, objectFit: "contain", background: "#0b0907", borderRadius: 10, display: "block", cursor: "pointer", marginBottom: 12 }} />
               {planTeam === "A" ? (<>
-                <div className="form-hint" style={{ marginBottom: 6 }}>Start a line with <strong>#</strong> for a heading and <strong>-</strong> for a bullet.</div>
-                {(!weekPlan || weekPlan.same) && <div className="form-hint" style={{ marginBottom: 6, color: "var(--gold)" }}>Team B is set to "Same as A", so this plan is shown to everyone.</div>}
+                <div className="form-hint" style={{ marginBottom: 6 }}>{trRich("Start a line with <b>#</b> for a heading and <b>-</b> for a bullet.")}</div>
+                {(!weekPlan || weekPlan.same) && <div className="form-hint" style={{ marginBottom: 6, color: "var(--gold)" }}>{tr("Team B is set to \"Same as A\", so this plan is shown to everyone.")}</div>}
                 <textarea className="form-input" rows={12} value={planText} onChange={e => setPlanText(e.target.value)} style={{ fontFamily: "inherit", fontSize: 13, lineHeight: 1.5, resize: "vertical" }} />
-                {weekPlan && <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 8, paddingLeft: 0 }} onClick={resetPlan}>↺ Reset to original</button>}
+                {weekPlan && <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 8, paddingLeft: 0 }} onClick={resetPlan}>↺ {tr("Reset to original")}</button>}
               </>) : (<>
                 <label className="row" style={{ gap: 8, cursor: "pointer", marginBottom: 10, fontSize: 14, fontWeight: 600 }}>
                   <input type="checkbox" checked={planSame} style={{ width: 18, height: 18, accentColor: "var(--gold)" }}
                     onChange={e => { const same = e.target.checked; setPlanSame(same); if (!same && !(weekPlan && !weekPlan.same)) setPlanText((weekPlan || {}).a ?? originalPlanText); }} />
-                  Same as A
+                  {tr("Same as A")}
                 </label>
                 {planSame ? (
-                  <div className="form-hint" style={{ background: "var(--surface2)", borderRadius: 8, padding: "10px 12px" }}>Team B uses Team A's plan. Members see one plan for everyone on the Plans tab.</div>
+                  <div className="form-hint" style={{ background: "var(--surface2)", borderRadius: 8, padding: "10px 12px" }}>{tr("Team B uses Team A's plan. Members see one plan for everyone on the Plans tab.")}</div>
                 ) : (<>
-                  <div className="form-hint" style={{ marginBottom: 6 }}>Start a line with <strong>#</strong> for a heading and <strong>-</strong> for a bullet.</div>
+                  <div className="form-hint" style={{ marginBottom: 6 }}>{trRich("Start a line with <b>#</b> for a heading and <b>-</b> for a bullet.")}</div>
                   <textarea className="form-input" rows={12} value={planText} onChange={e => setPlanText(e.target.value)} style={{ fontFamily: "inherit", fontSize: 13, lineHeight: 1.5, resize: "vertical" }} />
                 </>)}
               </>)}
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setPlanTeam(null)}>Cancel</button>
-              <button className="btn btn-primary" onClick={savePlan}>💾 Save plan</button>
+              <button className="btn btn-secondary" onClick={() => setPlanTeam(null)}>{tr("Cancel")}</button>
+              <button className="btn btn-primary" onClick={savePlan}>💾 {tr("Save plan")}</button>
             </div>
           </div>
         </div>
@@ -3880,11 +4007,11 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
         <div className="modal-overlay" onClick={() => setCapsTeam(null)}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 420 }}>
             <div className="modal-header">
-              <div className="modal-title">👥 Team {capsTeam === "teamA" ? "A" : "B"} — Spots per assignment</div>
-              <button className="btn btn-ghost btn-sm" onClick={() => setCapsTeam(null)} aria-label="Close">✕</button>
+              <div className="modal-title">👥 {tr("Team")} {capsTeam === "teamA" ? "A" : "B"} — {tr("Spots per assignment")}</div>
+              <button className="btn btn-ghost btn-sm" onClick={() => setCapsTeam(null)} aria-label={tr("Close")}>✕</button>
             </div>
             <div className="modal-body">
-              <div className="form-hint" style={{ marginBottom: 10 }}>How many players each assignment holds for Team {capsTeam === "teamA" ? "A" : "B"} only. Set 0 to hide an assignment you're not using.</div>
+              <div className="form-hint" style={{ marginBottom: 10 }}>{tr("How many players each assignment holds for Team {team} only. Set 0 to hide an assignment you're not using.", { team: capsTeam === "teamA" ? "A" : "B" })}</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(92px, 1fr))", gap: 8 }}>
                 {slots.map(sl => (
                   <label key={sl} style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, fontWeight: 600, color: "var(--text-mid)" }}>
@@ -3901,12 +4028,12 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
                 const ok = total === 20;
                 return (
                   <span className="spots-counter" style={{ color: ok ? "var(--green)" : total > 20 ? "var(--red)" : "var(--text-mid)" }}>
-                    {ok ? "20/20 ✓" : total < 20 ? `${total}/20 · ${20 - total} more` : `${total}/20 · ${total - 20} too many`}
+                    {ok ? "20/20 ✓" : total < 20 ? `${total}/20 · ${tr("{n} more", { n: 20 - total })}` : `${total}/20 · ${tr("{n} too many", { n: total - 20 })}`}
                   </span>
                 );
               })()}
-              <button className="btn btn-secondary" onClick={() => setCapsTeam(null)}>Cancel</button>
-              <button className="btn btn-primary" onClick={saveCaps} style={{ whiteSpace: "nowrap" }}>💾 Save</button>
+              <button className="btn btn-secondary" onClick={() => setCapsTeam(null)}>{tr("Cancel")}</button>
+              <button className="btn btn-primary" onClick={saveCaps} style={{ whiteSpace: "nowrap" }}>💾 {tr("Save")}</button>
             </div>
           </div>
         </div>
@@ -3918,7 +4045,7 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
       {(histTeams?.unassigned || []).length > 0 && (
         <div style={{ marginTop: 8, marginBottom: 16 }}>
           <div style={{ fontWeight: 700, marginBottom: 8, color: "var(--text-dim)", fontSize: 15 }}>
-            ❓ Unassigned <span style={{ fontSize: 12, fontWeight: 400 }}>— signed up but not placed on a team</span>
+            ❓ {tr("Unassigned")} <span style={{ fontSize: 12, fontWeight: 400 }}>— {tr("signed up but not placed on a team")}</span>
           </div>
           <div style={{ background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: 10, padding: "10px 14px" }}>
             {histTeams.unassigned.map((m, i) => (
@@ -3935,14 +4062,14 @@ function WeekDetailView({ view, tab, histTeams, slots, isAdmin, t, showToast, ge
       {(histTeams?.waitlist || []).length > 0 && (
         <div style={{ marginTop: 8 }}>
           <div style={{ fontWeight: 700, marginBottom: 8, color: "var(--red)", fontSize: 15 }}>
-            ⏳ Waitlist <span style={{ fontSize: 12, fontWeight: 400, color: "var(--text-dim)" }}>— give these players priority next week</span>
+            ⏳ {tr("Waitlist")} <span style={{ fontSize: 12, fontWeight: 400, color: "var(--text-dim)" }}>— {tr("give these players priority next week")}</span>
           </div>
           <div style={{ background: "rgba(229,57,53,0.05)", border: "1px solid rgba(229,57,53,0.2)", borderRadius: 10, padding: "12px 16px" }}>
             {histTeams.waitlist.map((m, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderBottom: i < histTeams.waitlist.length - 1 ? "1px solid var(--border)" : "none" }}>
                 <span style={{ fontSize: 16 }}>⏳</span>
                 <span style={{ fontWeight: 600 }}>{m.name || getName(m.userId)}</span>
-                {m.fromTeam && <span style={{ fontSize: 11, color: "var(--text-dim)" }}>was Team {m.fromTeam}</span>}
+                {m.fromTeam && <span style={{ fontSize: 11, color: "var(--text-dim)" }}>{tr("was Team {team}", { team: m.fromTeam })}</span>}
               </div>
             ))}
           </div>
@@ -3996,22 +4123,22 @@ function StormLeaderboard({ csTeams, dsTeams, csSignups, dsSignups, members, get
   return (
     <div style={{ marginTop: 16 }}>
       <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
-        <span style={{ fontSize: 13, color: "var(--text-dim)" }}>Show:</span>
-        {[["all","All Storms"],["canyon","🏔️ Canyon"],["desert","🏜️ Desert"]].map(([v, l]) => (
+        <span style={{ fontSize: 13, color: "var(--text-dim)" }}>{tr("Show")}:</span>
+        {[["all",tr("All Storms")],["canyon","🏔️ Canyon"],["desert","🏜️ Desert"]].map(([v, l]) => (
           <button key={v} className={`sort-chip ${filter === v ? "active" : ""}`} onClick={() => setFilter(v)}>{l}</button>
         ))}
-        <span style={{ marginLeft: "auto", fontSize: 12, color: "var(--text-dim)" }}>{sorted.length} members</span>
+        <span style={{ marginLeft: "auto", fontSize: 12, color: "var(--text-dim)" }}>{tr("{n} members", { n: sorted.length })}</span>
       </div>
       <div style={{ overflowX: "auto" }}>
         <table className="data-table" style={{ fontSize: 13 }}>
           <thead>
             <tr>
-              <th style={{ cursor: "pointer" }} onClick={() => toggle("name")}>Player{arrow("name")}</th>
-              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("pct")}>Rate{arrow("pct")}</th>
-              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("signedUp")}>Signed Up{arrow("signedUp")}</th>
-              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("madeTeam")}>Made Team{arrow("madeTeam")}</th>
-              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("waitlisted")}>Waitlisted{arrow("waitlisted")}</th>
-              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("missed")}>Missed{arrow("missed")}</th>
+              <th style={{ cursor: "pointer" }} onClick={() => toggle("name")}>{tr("Player")}{arrow("name")}</th>
+              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("pct")}>{tr("Rate")}{arrow("pct")}</th>
+              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("signedUp")}>{tr("Signed Up")}{arrow("signedUp")}</th>
+              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("madeTeam")}>{tr("Made Team")}{arrow("madeTeam")}</th>
+              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("waitlisted")}>{tr("Waitlisted")}{arrow("waitlisted")}</th>
+              <th style={{ cursor: "pointer", textAlign: "center" }} onClick={() => toggle("missed")}>{tr("Missed")}{arrow("missed")}</th>
             </tr>
           </thead>
           <tbody>
@@ -4035,7 +4162,7 @@ function StormLeaderboard({ csTeams, dsTeams, csSignups, dsSignups, members, get
               );
             })}
             {sorted.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: "center", padding: 40, color: "var(--text-dim)" }}>No storm history yet.</td></tr>
+              <tr><td colSpan={6} style={{ textAlign: "center", padding: 40, color: "var(--text-dim)" }}>{tr("No storm history yet.")}</td></tr>
             )}
           </tbody>
         </table>
@@ -4052,14 +4179,14 @@ function StormSettingsModal({ type, showToast, onClose, isAdmin, seasonActive, o
 
   const addTime = async () => {
     const m = /^(\d{1,2}):(\d{2})$/.exec(newTime.trim());
-    if (!m || +m[1] > 23 || +m[2] > 59) { showToast("Enter a time like 09:00"); return; }
+    if (!m || +m[1] > 23 || +m[2] > 59) { showToast(tr("Enter a time like 09:00")); return; }
     const tm = `${m[1].padStart(2, "0")}:${m[2]}`;
     if (cfg.times.includes(tm)) { setNewTime(""); return; }
-    if (await save(type, { times: sortTimes([...cfg.times, tm]) })) { setNewTime(""); showToast(`${tm} added to the sign-up survey ✓`); }
+    if (await save(type, { times: sortTimes([...cfg.times, tm]) })) { setNewTime(""); showToast(tr("{time} added to the sign-up survey ✓", { time: tm })); }
   };
   const removeTime = async (tm) => {
-    if (cfg.times.length <= 1) { showToast("Keep at least one time."); return; }
-    if (await save(type, { times: cfg.times.filter(x => x !== tm) })) showToast(`${tm} removed from the sign-up survey`);
+    if (cfg.times.length <= 1) { showToast(tr("Keep at least one time.")); return; }
+    if (await save(type, { times: cfg.times.filter(x => x !== tm) })) showToast(tr("{time} removed from the sign-up survey", { time: tm }));
   };
   const sectionTitle = { fontWeight: 700, fontSize: 15, marginBottom: 6 };
 
@@ -4067,43 +4194,43 @@ function StormSettingsModal({ type, showToast, onClose, isAdmin, seasonActive, o
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="modal-title">⚙️ {type === "canyon" ? "Canyon" : "Desert"} Storm Settings</div>
-          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close">✕</button>
+          <div className="modal-title">⚙️ {type === "canyon" ? "Canyon Storm" : "Desert Storm"} — {tr("Settings")}</div>
+          <button className="btn btn-ghost btn-sm" onClick={onClose} aria-label={tr("Close")}>✕</button>
         </div>
         <div className="modal-body">
-          <div style={sectionTitle}>⏰ Sign-up time options</div>
-          <div className="form-hint" style={{ marginBottom: 8 }}>Only these times show in the sign-up survey. Members can tick more than one. Changes save instantly.</div>
+          <div style={sectionTitle}>⏰ {tr("Sign-up time options")}</div>
+          <div className="form-hint" style={{ marginBottom: 8 }}>{tr("Only these times show in the sign-up survey. Members can tick more than one. Changes save instantly.")}</div>
           <div className="chip-row" style={{ marginBottom: 10 }}>
             {cfg.times.map(tm => (
-              <span key={tm} className="chip">{tm}<button type="button" aria-label={`Remove ${tm}`} onClick={() => removeTime(tm)}>✕</button></span>
+              <span key={tm} className="chip">{tm}<button type="button" aria-label={tr("Remove {time}", { time: tm })} onClick={() => removeTime(tm)}>✕</button></span>
             ))}
           </div>
           <div className="row" style={{ gap: 8 }}>
-            <input className="form-input" type="time" step={60} value={newTime} onChange={e => setNewTime(e.target.value)} style={{ maxWidth: 140 }} aria-label="New time" />
-            <button className="btn btn-sm btn-primary" onClick={addTime}>+ Add time</button>
+            <input className="form-input" type="time" step={60} value={newTime} onChange={e => setNewTime(e.target.value)} style={{ maxWidth: 140 }} aria-label={tr("New time")} />
+            <button className="btn btn-sm btn-primary" onClick={addTime}>+ {tr("Add time")}</button>
           </div>
 
           <div className="divider" style={{ margin: "18px 0" }} />
 
           {isAdmin && <>
-            <div style={sectionTitle}>🌙 Season</div>
+            <div style={sectionTitle}>🌙 {tr("Season")}</div>
             <div className="row-between" style={{ gap: 10 }}>
               <div className="form-hint" style={{ margin: 0 }}>
-                {seasonActive ? "Active — members can see this storm." : "Disabled — this storm is hidden from members."}
+                {seasonActive ? tr("Active — members can see this storm.") : tr("Disabled — this storm is hidden from members.")}
               </div>
               <button className={`btn btn-sm ${seasonActive ? "btn-secondary" : "btn-purple"}`} style={{ whiteSpace: "nowrap" }} onClick={onToggleSeason}>
-                {seasonActive ? "🌙 Disable" : "☀️ Enable"}
+                {seasonActive ? "🌙 " + tr("Disable") : "☀️ " + tr("Enable")}
               </button>
             </div>
             <div className="divider" style={{ margin: "18px 0" }} />
           </>}
 
-          <div style={sectionTitle}>🗺️ Battle map picture</div>
-          <div className="form-hint" style={{ marginBottom: 8 }}>Battle plans are set per week — use 📝 Plan on each team in the week's assignments.</div>
+          <div style={sectionTitle}>🗺️ {tr("Battle map picture")}</div>
+          <div className="form-hint" style={{ marginBottom: 8 }}>{tr("Battle plans are set per week — use 📝 Plan on each team in the week's assignments.")}</div>
           <BattleMapPicker type={type} showToast={showToast} />
         </div>
         <div className="modal-footer">
-          <button className="btn btn-primary" onClick={onClose}>Done</button>
+          <button className="btn btn-primary" onClick={onClose}>{tr("Done")}</button>
         </div>
       </div>
     </div>
@@ -4146,9 +4273,9 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
 
   const saveAdminSignup = () => {
     const f = adminSignupForm;
-    if (!f.memberId) { showToast("Select a member."); return; }
-    if (!f.power) { showToast("Enter squad power."); return; }
-    if (!f.squadType) { showToast("Select squad type."); return; }
+    if (!f.memberId) { showToast(tr("Select a member.")); return; }
+    if (!f.power) { showToast(tr("Enter squad power.")); return; }
+    if (!f.squadType) { showToast(tr("Select squad type.")); return; }
     const weekStart = getSignupWeek(tab === "canyon" ? "canyon" : "desert");
     const signup = { userId: f.memberId, power: f.power, squadType: f.squadType, availability: f.availability, timePreference: f.timePreference, canFlexTime: f.canFlexTime || "", week: weekStart };
     const notThis = x => !(String(x.userId) === String(f.memberId) && x.week === weekStart);
@@ -4156,7 +4283,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     else setDsSignups(s => [...s.filter(notThis), signup]);
     setAdminSignupOpen(false);
     setAdminSignupForm(null);
-    showToast(`${members.find(m=>String(m.id)===String(f.memberId))?.username || "Member"} signed up ✓`);
+    showToast(tr("{name} signed up ✓", { name: members.find(m=>String(m.id)===String(f.memberId))?.username || tr("Member") }));
   };
 
   const toggleSignups = async (type) => {
@@ -4164,9 +4291,9 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     const { error } = await supabase.from("storm_settings")
       .update({ signups_open: newVal, updated_at: new Date().toISOString() })
       .eq("type", type);
-    if (error) { showToast("Error updating sign-up status."); return; }
+    if (error) { showToast(tr("Error updating sign-up status.")); return; }
     setStormSettings(prev => ({ ...prev, [type]: newVal }));
-    showToast(`${type === "canyon" ? "🏔️ Canyon" : "🏜️ Desert"} sign-ups ${newVal ? "opened ✅" : "closed 🔒"}`);
+    showToast((type === "canyon" ? "🏔️ Canyon: " : "🏜️ Desert: ") + (newVal ? tr("sign-ups opened ✅") : tr("sign-ups closed 🔒")));
   };
 
   const toggleSeasonActive = async (type) => {
@@ -4174,9 +4301,9 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     const { error } = await supabase.from("storm_settings")
       .update({ season_active: newVal, updated_at: new Date().toISOString() })
       .eq("type", type);
-    if (error) { showToast("Error updating season status."); return; }
+    if (error) { showToast(tr("Error updating season status.")); return; }
     setStormSettings(prev => ({ ...prev, [`${type}_active`]: newVal }));
-    showToast(`${type === "canyon" ? "🏔️ Canyon" : "🏜️ Desert"} season ${newVal ? "enabled — visible to members ✅" : "disabled — hidden from members 🔒"}`);
+    showToast((type === "canyon" ? "🏔️ Canyon: " : "🏜️ Desert: ") + (newVal ? tr("season enabled — visible to members ✅") : tr("season disabled — hidden from members 🔒")));
   };
 
   // Battle date key = most recent Thursday (Canyon) or Friday (Desert) — same as getSignupWeek
@@ -4243,10 +4370,10 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
       setMembers && setMembers(m => m.map(mb => String(mb.id) === String(updated.userId) ? { ...mb, power: powerInUnits } : mb));
     }
     setEditSignup(null);
-    showToast("Sign-up updated ✓");
+    showToast(tr("Sign-up updated ✓"));
   };
 
-  const getName = (userId) => members.find(m => String(m.id) === String(userId))?.username || "Unknown";
+  const getName = (userId) => members.find(m => String(m.id) === String(userId))?.username || tr("Unknown");
 
   const toggleSort = (s) => setSorts(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
 
@@ -4278,9 +4405,9 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     signups.forEach(sg => { const label = timePrefLabel(sg.timePreference, offeredTimes); groups[label] = (groups[label] || 0) + 1; });
     const palette = ["var(--blue)", "var(--purple)", "var(--green)", "var(--red)", "var(--gold-light)", "var(--text-dim)"];
     return Object.entries(groups)
-      .sort(([a], [b]) => (a === "Any time" ? -1 : b === "Any time" ? 1 : a.localeCompare(b)))
-      .map(([label, count], i) => ({ label: label === "Any time" ? "Any" : label, count, pct: Math.round(count / total * 100),
-        color: label === "Any time" ? "var(--gold)" : palette[i % palette.length] }));
+      .sort(([a], [b]) => (a === tr("Any time") ? -1 : b === tr("Any time") ? 1 : a.localeCompare(b)))
+      .map(([label, count], i) => ({ label: label === tr("Any time") ? tr("Any") : label, count, pct: Math.round(count / total * 100),
+        color: label === tr("Any time") ? "var(--gold)" : palette[i % palette.length] }));
   };
 
   const assign = (userId, key, value) => setAssignments(a => ({ ...a, [userId]: { ...(a[userId]||{}), [key]: value } }));
@@ -4328,7 +4455,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
       ...teamBMembers.slice(30).map(m => ({ ...m, fromTeam: "B" })),
     ];
     if (waitlist.length > 0) {
-      showToast(`⚠️ ${waitlist.length} player(s) moved to waitlist — teams capped at 30.`);
+      showToast("⚠️ " + tr("{n} player(s) moved to waitlist — teams capped at 30.", { n: waitlist.length }));
     }
 
     const existing = (tab === "canyon" ? csTeams : dsTeams)[weekKey] || {};
@@ -4345,7 +4472,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     if (tab === "canyon") setCsTeams(prev => ({ ...prev, [weekKey]: teamData }));
     else setDsTeams(prev => ({ ...prev, [weekKey]: teamData }));
 
-    showToast("Teams saved! ✓");
+    showToast(tr("Teams saved! ✓"));
   };
 
   const exportCSV = (signups) => {
@@ -4358,7 +4485,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
     }).join("\n");
     const blob = new Blob([header+rows], { type: "text/csv" });
     const url = URL.createObjectURL(blob); const el = document.createElement("a"); el.href=url; el.download=`${tab}-${serverToday()}.csv`; el.click();
-    showToast("CSV exported!");
+    showToast(tr("CSV exported!"));
   };
 
   const copyAll = (signups) => {
@@ -4367,7 +4494,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
       const name = getName(s.userId); const a = assignments[s.userId]||{};
       lines.push(`${name} | ${s.power} | ${s.squadType} | ${s.availability} | ${timePrefLabel(s.timePreference, offeredTimes)} | Team ${a.team||"?"} | ${a.slot||"?"} | ${a.role||"?"}`);
     });
-    navigator.clipboard.writeText(lines.join("\n")).then(() => showToast("Copied!"));
+    navigator.clipboard.writeText(lines.join("\n")).then(() => showToast(tr("Copied!")));
   };
 
   // signupSearch moved to top
@@ -4417,12 +4544,12 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
         signups={tab === "canyon" ? csSignups : dsSignups}
         onBack={() => setView("current")}
         onClear={async () => {
-          if (!window.confirm(`Clear team assignments for ${formatDate(view)}?`)) return;
+          if (!window.confirm(tr("Clear team assignments for {date}?", { date: formatDate(view) }))) return;
           const empty = { timeA: histTeams?.timeA||"", timeB: histTeams?.timeB||"", teamA:[], teamB:[], slotData:{}, attendance:{} };
           if (tab === "canyon") setCsTeams(prev => ({ ...prev, [view]: empty }));
           else setDsTeams(prev => ({ ...prev, [view]: empty }));
           await supabase.from("battle_teams").delete().eq("type", tab==="canyon"?"canyon":"desert").eq("battle_date", view);
-          setView("current"); showToast("Week cleared.");
+          setView("current"); showToast(tr("Week cleared."));
         }}
         onPatchWeek={async (patch) => {
           const updated = { ...(histTeams || {}), ...patch };
@@ -4434,7 +4561,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
           const updated = { ...histTeams, slotData, attendance };
           if (tab === "canyon") setCsTeams(prev => ({ ...prev, [view]: updated }));
           else setDsTeams(prev => ({ ...prev, [view]: updated }));
-          showToast("Saved ✓");
+          showToast(tr("Saved ✓"));
         }}
         onRemove={(uid, teamKey) => {
           // Remove player from the team — they go back to unassigned in main table
@@ -4444,7 +4571,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
           };
           if (tab === "canyon") setCsTeams(prev => ({ ...prev, [view]: updated }));
           else setDsTeams(prev => ({ ...prev, [view]: updated }));
-          showToast("Player unassigned — assign them in the main table.");
+          showToast(tr("Player unassigned — assign them in the main table."));
         }}
       />
     );
@@ -4455,7 +4582,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
       <div className="tabs">
         <button className={`tab ${tab==="canyon"?"active":""}`} onClick={()=>setTab("canyon")}>🏔️ Canyon Storm</button>
         <button className={`tab ${tab==="desert"?"active":""}`} onClick={()=>setTab("desert")}>🏜️ Desert Storm</button>
-        <button className={`tab ${tab==="leaderboard"?"active":""}`} onClick={()=>setTab("leaderboard")}>📊 Leaderboard</button>
+        <button className={`tab ${tab==="leaderboard"?"active":""}`} onClick={()=>setTab("leaderboard")}>📊 {tr("Leaderboard")}</button>
       </div>
 
       {tab === "leaderboard" && <StormLeaderboard csTeams={csTeams} dsTeams={dsTeams} csSignups={csAllSignups} dsSignups={dsAllSignups} members={members} getName={getName} />}
@@ -4463,17 +4590,17 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
       {(tab === "canyon" || tab === "desert") && <>
       {/* Team times + open/close sign-ups */}
       <div style={{display:"grid", gridTemplateColumns:"1fr 1fr auto", gap:10, marginBottom:16, alignItems:"end"}}>
-        <div><label className="form-label">Team A Time</label><input className="form-input" value={timeA} onChange={e=>setTimeA(e.target.value)} placeholder="12:00"/></div>
-        <div><label className="form-label">Team B Time</label><input className="form-input" value={timeB} onChange={e=>setTimeB(e.target.value)} placeholder="23:00"/></div>
+        <div><label className="form-label">{tr("Team A Time")}</label><input className="form-input" value={timeA} onChange={e=>setTimeA(e.target.value)} placeholder="12:00"/></div>
+        <div><label className="form-label">{tr("Team B Time")}</label><input className="form-input" value={timeB} onChange={e=>setTimeB(e.target.value)} placeholder="23:00"/></div>
         <div>
-          <label className="form-label">Sign-ups</label>
+          <label className="form-label">{tr("Sign-ups")}</label>
           <button
             className={`btn ${(stormSettings?.[tab] ?? false) ? "btn-danger" : "btn-green"}`}
             style={{ padding: "0 14px", height: 48, fontSize: 14, whiteSpace: "nowrap" }}
             onClick={() => toggleSignups(tab)}
-            title={(stormSettings?.[tab] ?? false) ? "Sign-ups are open — tap to close" : "Sign-ups are closed — tap to open"}
+            title={(stormSettings?.[tab] ?? false) ? tr("Sign-ups are open — tap to close") : tr("Sign-ups are closed — tap to open")}
           >
-            {(stormSettings?.[tab] ?? false) ? "🔒 Close" : "✅ Open"}
+            {(stormSettings?.[tab] ?? false) ? "🔒 " + tr("Close") : "✅ " + tr("Open")}
           </button>
         </div>
       </div>
@@ -4487,11 +4614,11 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
           <div className="card" style={{marginBottom:12}}>
             <div style={{padding:"10px 14px"}}>
               <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8, fontSize:13}}>
-                <span style={{fontWeight:600}}>⏰ Time Slots</span>
-                <span style={{color:"var(--text-dim)"}}>Total: <strong style={{color:"var(--text)"}}>{pieTotal}</strong></span>
+                <span style={{fontWeight:600}}>⏰ {tr("Time Slots")}</span>
+                <span style={{color:"var(--text-dim)"}}>{tr("Total")}: <strong style={{color:"var(--text)"}}>{pieTotal}</strong></span>
               </div>
               <div style={{display:"flex", alignItems:"center", gap:14}}>
-                <div role="img" aria-label="Time slot distribution" style={{width:56, height:56, borderRadius:"50%", flexShrink:0, background:`conic-gradient(${stops})`}} />
+                <div role="img" aria-label={tr("Time slot distribution")} style={{width:56, height:56, borderRadius:"50%", flexShrink:0, background:`conic-gradient(${stops})`}} />
                 <div style={{display:"flex", flexDirection:"column", gap:3, fontSize:12}}>
                   {pieData.map((d,i)=>(
                     <span key={i} style={{display:"inline-flex", alignItems:"center", gap:5, whiteSpace:"nowrap"}}>
@@ -4512,26 +4639,26 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
       <div style={{ marginBottom: 14 }}>
         {!adminSignupOpen ? (
           <div className="storm-actions">
-            <button className="btn btn-sm btn-primary" onClick={openAdminSignup} title="Add a member sign-up">➕ Add</button>
-            <button className="btn btn-sm btn-primary" onClick={saveTeams} title="Save teams">💾 Save</button>
-            <button className={`btn btn-sm ${hideAssigned ? "btn-gold" : "btn-secondary"}`} onClick={() => setHideAssigned(h => !h)} title={hideAssigned ? "Show all sign-ups" : "Hide assigned players"}>
-              {hideAssigned ? "👁 All" : "🙈 Hide"}
+            <button className="btn btn-sm btn-primary" onClick={openAdminSignup} title={tr("Add a member sign-up")}>➕ {tr("Add")}</button>
+            <button className="btn btn-sm btn-primary" onClick={saveTeams} title={tr("Save teams")}>💾 {tr("Save")}</button>
+            <button className={`btn btn-sm ${hideAssigned ? "btn-gold" : "btn-secondary"}`} onClick={() => setHideAssigned(h => !h)} title={hideAssigned ? tr("Show all sign-ups") : tr("Hide assigned players")}>
+              {hideAssigned ? "👁 " + tr("All") : "🙈 " + tr("Hide")}
             </button>
-            <input className="form-input storm-search" type="search" value={signupSearch} onChange={e => setSignupSearch(e.target.value)} placeholder="🔍 Search" aria-label="Search by username" />
-            <button className="btn btn-sm btn-secondary storm-gear" onClick={() => setSettingsOpen(true)} title="Storm settings" aria-label="Storm settings">⚙️</button>
+            <input className="form-input storm-search" type="search" value={signupSearch} onChange={e => setSignupSearch(e.target.value)} placeholder={"🔍 " + tr("Search")} aria-label={tr("Search by username")} />
+            <button className="btn btn-sm btn-secondary storm-gear" onClick={() => setSettingsOpen(true)} title={tr("Storm settings")} aria-label={tr("Storm settings")}>⚙️</button>
           </div>
         ) : (
             <div className="card" style={{ marginBottom: 0 }}>
               <div className="card-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div className="card-title">➕ Add Member Sign-Up</div>
+                <div className="card-title">➕ {tr("Add Member Sign-Up")}</div>
                 <button className="btn btn-ghost btn-sm" onClick={() => setAdminSignupOpen(false)}>✕</button>
               </div>
               <div className="card-body">
                 <div className="form-group">
-                  <label className="form-label">Member</label>
+                  <label className="form-label">{tr("Member")}</label>
                   <select className="form-input form-select" value={adminSignupForm.memberId}
                     onChange={e => setAdminSignupForm(f => ({ ...f, memberId: e.target.value }))}>
-                    <option value="">— Select member —</option>
+                    <option value="">— {tr("Select member")} —</option>
                     {members.filter(m => m.approved && !m.disabled)
                       .filter(m => !(tab === "canyon" ? csSignups : dsSignups).find(s => String(s.userId) === String(m.id)))
                       .sort((a, b) => a.username.localeCompare(b.username))
@@ -4540,24 +4667,24 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   <div className="form-group">
-                    <label className="form-label">Squad Power</label>
+                    <label className="form-label">{tr("Squad Power")}</label>
                     <input className="form-input" value={adminSignupForm.power}
                       onChange={e => setAdminSignupForm(f => ({ ...f, power: e.target.value }))}
-                      placeholder="e.g. 41.24" />
+                      placeholder={tr("e.g. 41.24")} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Squad Type</label>
+                    <label className="form-label">{tr("Squad Type")}</label>
                     <select className="form-input form-select" value={adminSignupForm.squadType}
                       onChange={e => setAdminSignupForm(f => ({ ...f, squadType: e.target.value }))}>
-                      <option value="">— Select —</option>
-                      <option>Air</option><option>Tank</option><option>Missile</option>
+                      <option value="">— {tr("Select")} —</option>
+                      {SQUAD_TYPES.map(st => <option key={st} value={st}>{tr(st)}</option>)}
                     </select>
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Availability</label>
+                  <label className="form-label">{tr("Availability")}</label>
                   <div className="radio-group">
-                    {[["confirmed","Confirmed"],["sub","Sub"],["cantMake","Can't Make"]].map(([val,label]) => (
+                    {[["confirmed",tr("Confirmed")],["sub",tr("Sub")],["cantMake",tr("Can't Make")]].map(([val,label]) => (
                       <div key={val} className={`radio-option ${adminSignupForm.availability === val ? "selected" : ""}`}
                         onClick={() => setAdminSignupForm(f => ({ ...f, availability: val }))}>
                         <div className="radio-dot"></div><span style={{ fontSize: 13 }}>{label}</span>
@@ -4566,17 +4693,17 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Time Preference</label>
+                  <label className="form-label">{tr("Time Preference")}</label>
                   <TimePrefPicker compact value={adminSignupForm.timePreference} offered={offeredTimes}
                     onChange={v => setAdminSignupForm(f => ({ ...f, timePreference: v, canFlexTime: isAnyTime(v, offeredTimes) ? "" : f.canFlexTime }))} />
                 </div>
                 {adminSignupForm.timePreference && !isAnyTime(adminSignupForm.timePreference, offeredTimes) && (
                   <div className="form-group">
                     <div style={{ background: "rgba(201,140,40,0.08)", border: "1px solid var(--gold)", borderRadius: 10, padding: "10px 14px", marginBottom: 8, fontSize: 12, color: "var(--text-mid)" }}>
-                      ⚠️ If we don't get enough sign-ups for their preferred time slot, can they switch?
+                      ⚠️ {tr("If we don't get enough sign-ups for their preferred time slot, can they switch?")}
                     </div>
                     <div className="radio-group">
-                      {[["yes","Yes"],["no","No"]].map(([val,label]) => (
+                      {[["yes",tr("Yes")],["no",tr("No")]].map(([val,label]) => (
                         <div key={val} className={`radio-option ${adminSignupForm.canFlexTime === val ? "selected" : ""}`}
                           onClick={() => setAdminSignupForm(f => ({ ...f, canFlexTime: val }))}>
                           <div className="radio-dot"></div><span style={{ fontSize: 13 }}>{label}</span>
@@ -4586,8 +4713,8 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
                   </div>
                 )}
                 <div className="row" style={{ gap: 8, marginTop: 4 }}>
-                  <button className="btn btn-primary" onClick={saveAdminSignup}>✓ Add Sign-Up</button>
-                  <button className="btn btn-secondary" onClick={() => setAdminSignupOpen(false)}>Cancel</button>
+                  <button className="btn btn-primary" onClick={saveAdminSignup}>✓ {tr("Add Sign-Up")}</button>
+                  <button className="btn btn-secondary" onClick={() => setAdminSignupOpen(false)}>{tr("Cancel")}</button>
                 </div>
               </div>
             </div>
@@ -4596,43 +4723,43 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
 
       {/* Search (in the action row normally; shown here while the add form is open) */}
       {adminSignupOpen && <div style={{ marginBottom: 10 }}>
-        <input className="form-input" value={signupSearch} onChange={e => setSignupSearch(e.target.value)} placeholder="🔍 Search by username..." style={{ maxWidth: 300 }} />
+        <input className="form-input" value={signupSearch} onChange={e => setSignupSearch(e.target.value)} placeholder={"🔍 " + tr("Search by username...")} style={{ maxWidth: 300 }} />
       </div>}
 
       {/* After the sign-up cut-off, new sign-ups go to next week's battle — show them here so they aren't "missing" */}
       {getNextSignupWeek(tab) !== getSignupWeek(tab) && (() => {
         const nextList = tab === "canyon" ? csNextSignups : dsNextSignups;
-        const fmt = (d) => new Date(d + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
+        const fmt = (d) => new Date(d + "T12:00:00Z").toLocaleDateString(dateLocale(), { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
         return (<>
           <div className="next-battle-note">
-            <span>📅 This list is the <strong>{fmt(getSignupWeek(tab))}</strong> battle (sign-ups closed). New sign-ups go to <strong>{fmt(getNextSignupWeek(tab))}</strong>: {nextList.length}</span>
-            {nextList.length > 0 && <button className="btn btn-sm btn-secondary" onClick={() => setNextOpen(true)}>View</button>}
+            <span>📅 {trRich("This list is the <b>{date}</b> battle (sign-ups closed). New sign-ups go to <b>{next}</b>: {n}", { date: fmt(getSignupWeek(tab)), next: fmt(getNextSignupWeek(tab)), n: nextList.length })}</span>
+            {nextList.length > 0 && <button className="btn btn-sm btn-secondary" onClick={() => setNextOpen(true)}>{tr("View")}</button>}
           </div>
           {nextOpen && (
             <div className="modal-overlay" onClick={() => setNextOpen(false)}>
               <div className="modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                  <div className="modal-title">📅 {tab === "canyon" ? "Canyon" : "Desert"} — {fmt(getNextSignupWeek(tab))} sign-ups ({nextList.length})</div>
-                  <button className="btn btn-ghost btn-sm" onClick={() => setNextOpen(false)} aria-label="Close">✕</button>
+                  <div className="modal-title">📅 {tab === "canyon" ? "Canyon" : "Desert"} — {tr("{date} sign-ups", { date: fmt(getNextSignupWeek(tab)) })} ({nextList.length})</div>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setNextOpen(false)} aria-label={tr("Close")}>✕</button>
                 </div>
                 <div className="modal-body" style={{ padding: "8px 12px" }}>
                   <table className="data-table" style={{ fontSize: 13 }}>
-                    <thead><tr><th>Player</th><th>Pwr</th><th>Type</th><th>St</th><th>Time</th></tr></thead>
+                    <thead><tr><th>{tr("Player")}</th><th>{tr("Pwr")}</th><th>{tr("Type")}</th><th>{tr("St")}</th><th>{tr("Time")}</th></tr></thead>
                     <tbody>
                       {[...nextList].sort((x, y) => getName(x.userId).localeCompare(getName(y.userId))).map(sg => (
                         <tr key={sg.userId}>
                           <td style={{ fontWeight: 600 }}>{getName(sg.userId)}</td>
                           <td>{sg.power}</td>
-                          <td style={{ fontSize: 11 }}>{sg.squadType}</td>
+                          <td style={{ fontSize: 11 }}>{tr(sg.squadType)}</td>
                           <td>{sg.availability === "confirmed" ? "✓" : sg.availability === "sub" ? "S" : "✗"}</td>
                           <td style={{ fontSize: 11 }}>{timePrefLabel(sg.timePreference, offeredTimes, true)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <div className="form-hint" style={{ marginTop: 8 }}>These move into the main list automatically tomorrow, ready for team building.</div>
+                  <div className="form-hint" style={{ marginTop: 8 }}>{tr("These move into the main list automatically tomorrow, ready for team building.")}</div>
                 </div>
-                <div className="modal-footer"><button className="btn btn-primary" onClick={() => setNextOpen(false)}>Done</button></div>
+                <div className="modal-footer"><button className="btn btn-primary" onClick={() => setNextOpen(false)}>{tr("Done")}</button></div>
               </div>
             </div>
           )}
@@ -4646,10 +4773,10 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
         const totalSignups = (tab === "canyon" ? csSignups : dsSignups).length;
         return (
           <div className="count-pills sticky-counts">
-            <span className={`badge ${overA ? "badge-red" : "badge-gold"}`} title="Team A">A {cA}/30{overA ? " ⚠️" : ""}</span>
-            <span className={`badge ${overB ? "badge-red" : "badge-blue"}`} title="Team B">B {cB}/30{overB ? " ⚠️" : ""}</span>
-            <span className="badge badge-gray" title="Unassigned">Unassigned {Math.max(0, totalSignups - cA - cB)}</span>
-            {totalSignups > 60 && <span className="badge badge-red" title="On waitlist">Waitlist {totalSignups - 60}</span>}
+            <span className={`badge ${overA ? "badge-red" : "badge-gold"}`} title={tr("Team") + " A"}>A {cA}/30{overA ? " ⚠️" : ""}</span>
+            <span className={`badge ${overB ? "badge-red" : "badge-blue"}`} title={tr("Team") + " B"}>B {cB}/30{overB ? " ⚠️" : ""}</span>
+            <span className="badge badge-gray" title={tr("Unassigned")}>{tr("Unassigned")} {Math.max(0, totalSignups - cA - cB)}</span>
+            {totalSignups > 60 && <span className="badge badge-red" title={tr("On waitlist")}>{tr("Waitlist")} {totalSignups - 60}</span>}
           </div>
         );
       })()}
@@ -4668,7 +4795,7 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
           </colgroup>
           <thead>
             <tr>
-              {[["name","Player"],["power","Pwr"],["type","Type"],["status","St"],["time","Time"],["team","Team"]].map(([col,label]) => (
+              {[["name",tr("Player")],["power",tr("Pwr")],["type",tr("Type")],["status",tr("St")],["time",tr("Time")],["team",tr("Team")]].map(([col,label]) => (
                 <th key={col} style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleTableSort(col)}>
                   {label}{tableSort.col === col ? (tableSort.dir === "asc" ? "↑" : "↓") : ""}
                 </th>
@@ -4683,37 +4810,37 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
               const rowBg = a.team === "A" ? "var(--gold-pale)"
                 : a.team === "B" ? "rgba(74,155,196,0.14)"
                 : (i % 2 === 0 ? "transparent" : "var(--surface2)");
-              const typeShort = { Air: "Air", Tank: "Tnk", Missile: "Msl" }[s.squadType] || (s.squadType || "—").slice(0, 3);
-              const status = s.availability === "confirmed" ? { txt: "✓", c: "var(--green)", tip: "Confirmed" }
-                : s.availability === "sub" ? { txt: "S", c: "var(--gold)", tip: "Sub" }
-                : { txt: "✗", c: "var(--red)", tip: "Can't make" };
-              const timeTxt = !s.timePreference ? "Any" : timePrefLabel(s.timePreference, offeredTimes, true);
+              const typeShort = { Air: tr("Air"), Tank: tr("Tnk"), Missile: tr("Msl") }[s.squadType] || (s.squadType || "—").slice(0, 3);
+              const status = s.availability === "confirmed" ? { txt: "✓", c: "var(--green)", tip: tr("Confirmed") }
+                : s.availability === "sub" ? { txt: "S", c: "var(--gold)", tip: tr("Sub") }
+                : { txt: "✗", c: "var(--red)", tip: tr("Can't make") };
+              const timeTxt = !s.timePreference ? tr("Any") : timePrefLabel(s.timePreference, offeredTimes, true);
               const flex = s.timePreference && !isAnyTime(s.timePreference, offeredTimes)
                 ? (s.canFlexTime === "yes" ? { txt: "✓", c: "var(--green)" } : s.canFlexTime === "no" ? { txt: "✗", c: "var(--red)" } : null)
                 : null;
               return (
                 <tr key={s.userId ?? i} style={{ background: rowBg }}>
                   <td style={{ fontWeight: 600 }}>
-                    {isPriority && <span title="Priority: was on waitlist last week" style={{ color: "var(--gold)", marginRight: 2, fontSize: 10 }}>⭐</span>}
+                    {isPriority && <span title={tr("Priority: was on waitlist last week")} style={{ color: "var(--gold)", marginRight: 2, fontSize: 10 }}>⭐</span>}
                     <span style={{ cursor: "pointer" }} onClick={() => setViewMember && setViewMember(members.find(m => String(m.id) === String(s.userId)))}>{getName(s.userId)}</span>
                   </td>
                   <td>{s.power}</td>
-                  <td style={{ fontSize: 10, color: "var(--text-dim)" }} title={s.squadType}>{typeShort}</td>
+                  <td style={{ fontSize: 10, color: "var(--text-dim)" }} title={tr(s.squadType)}>{typeShort}</td>
                   <td style={{ fontWeight: 700, color: status.c, textAlign: "center" }} title={status.tip}>{status.txt}</td>
-                  <td style={{ fontSize: 11 }} title={flex ? (flex.txt === "✓" ? "Can switch times" : "Can't switch times") : undefined}>
+                  <td style={{ fontSize: 11 }} title={flex ? (flex.txt === "✓" ? tr("Can switch times") : tr("Can't switch times")) : undefined}>
                     {timeTxt}{flex && <span style={{ color: flex.c, fontWeight: 700, fontSize: 10, marginLeft: 1 }}>{flex.txt}</span>}
                   </td>
                   <td style={{ overflow: "visible" }}>
-                    <div className="team-seg" role="group" aria-label={`Team for ${getName(s.userId)}`}>
+                    <div className="team-seg" role="group" aria-label={tr("Team for {name}", { name: getName(s.userId) })}>
                       {["A","B","U"].map(v => (
                         <button key={v} type="button" className={a.team === v ? `on-${v}` : ""}
-                          title={v === "U" ? "Unassigned" : `Team ${v}`} aria-pressed={a.team === v}
+                          title={v === "U" ? tr("Unassigned") : `${tr("Team")} ${v}`} aria-pressed={a.team === v}
                           onClick={() => assign(s.userId, "team", a.team === v ? "" : v)}>{v}</button>
                       ))}
                     </div>
                   </td>
                   <td style={{ textAlign: "center", overflow: "visible" }}>
-                    <button type="button" aria-label="Edit sign-up" style={{ background: "none", border: "none", padding: 0, fontSize: 13, cursor: "pointer" }} onClick={()=>setEditSignup({signup:s, type:tab})}>✏️</button>
+                    <button type="button" aria-label={tr("Edit sign-up")} style={{ background: "none", border: "none", padding: 0, fontSize: 13, cursor: "pointer" }} onClick={()=>setEditSignup({signup:s, type:tab})}>✏️</button>
                   </td>
                 </tr>
               );
@@ -4741,9 +4868,9 @@ function AdminSignups({ setMembers, setViewMember, csAllSignups, dsAllSignups, c
               <div key={week} className="week-card" onClick={()=>setView(week)}>
                 <div>
                   <div style={{fontWeight:700}}>{tab==="canyon"?"🏔️":"🏜️"} {formatDate(week)}</div>
-                  <div style={{fontSize:13, color:"var(--text-dim)", marginTop:2}}>Click to view teams</div>
+                  <div style={{fontSize:13, color:"var(--text-dim)", marginTop:2}}>{tr("Click to view teams")}</div>
                 </div>
-                <span style={{color:"var(--gold)", fontWeight:700}}>View →</span>
+                <span style={{color:"var(--gold)", fontWeight:700}}>{tr("View")} →</span>
               </div>
             ))}
           </div>
@@ -4773,15 +4900,15 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
   const [tempPw, setTempPw] = useState("");
   const [resetDone, setResetDone] = useState(null); // { username, password }
 
-  const approve = (id) => { setMembers(m => m.map(mb => mb.id === id ? { ...mb, approved: true } : mb)); showToast("Member approved ✓"); };
-  const deny = (id) => { setMembers(m => m.filter(mb => mb.id !== id)); showToast("Member denied."); };
+  const approve = (id) => { setMembers(m => m.map(mb => mb.id === id ? { ...mb, approved: true } : mb)); showToast(tr("Member approved ✓")); };
+  const deny = (id) => { setMembers(m => m.filter(mb => mb.id !== id)); showToast(tr("Member denied.")); };
   const deleteMember = (id) => {
-    if (id === user.id) { showToast("You can't delete yourself!"); return; }
-    setMembers(m => m.filter(mb => mb.id !== id)); showToast("Member deleted.");
+    if (id === user.id) { showToast(tr("You can't delete yourself!")); return; }
+    setMembers(m => m.filter(mb => mb.id !== id)); showToast(tr("Member deleted."));
   };
   const toggleDisable = (id, currentlyDisabled) => {
     setMembers(m => m.map(mb => mb.id === id ? { ...mb, disabled: !currentlyDisabled } : mb));
-    showToast(currentlyDisabled ? "Member re-enabled ✓" : "Member disabled — hidden from all active lists ✓");
+    showToast(currentlyDisabled ? tr("Member re-enabled ✓") : tr("Member disabled — hidden from all active lists ✓"));
   };
   const [memberSearch, setMemberSearch] = useState("");
   const [showDisabled, setShowDisabled] = useState(false);
@@ -4819,11 +4946,11 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
     const blob = new Blob([header + rows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const el = document.createElement("a"); el.href = url; el.download = `members-${serverToday()}.csv`; el.click();
-    showToast("Members exported!");
+    showToast(tr("Members exported!"));
   };
 
   const doReset = () => {
-    if (!tempPw) { showToast("Enter a temporary password."); return; }
+    if (!tempPw) { showToast(tr("Enter a temporary password.")); return; }
     setMembers(m => m.map(mb => mb.id === resetModal.id ? { ...mb, password: tempPw } : mb));
     setResetDone({ username: resetModal.username, password: tempPw });
     setResetModal(null);
@@ -4837,21 +4964,21 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
   const toggleRequireApproval = async () => {
     const next = !requireApproval;
     const { error } = await supabase.from("app_settings").upsert({ key: "require_approval", value: String(next), updated_at: new Date().toISOString() }, { onConflict: "key" });
-    if (error) { showToast("⚠️ Couldn't change the setting — try again."); return; }
+    if (error) { showToast("⚠️ " + tr("Couldn't change the setting — try again.")); return; }
     setRequireApproval(next);
-    showToast(next ? "New accounts now need approval ✓" : "New accounts are approved automatically ✓");
+    showToast(next ? tr("New accounts now need approval ✓") : tr("New accounts are approved automatically ✓"));
   };
-  const changeRole = (id, role) => { setMembers(m => m.map(mb => mb.id === id ? { ...mb, role } : mb)); showToast(`Role updated to ${role} ✓`); };
+  const changeRole = (id, role) => { setMembers(m => m.map(mb => mb.id === id ? { ...mb, role } : mb)); showToast(tr("Role updated to {role} ✓", { role: roleLabel(role) })); };
 
   return (
     <div>
       {isAdmin && requireApproval !== null && (
         <div className="approval-row">
-          <span title={requireApproval ? "New accounts wait for an R4 or Admin to approve them" : "New accounts can use the hub right away"}>
-            🔐 New account approval: <strong style={{ color: requireApproval ? "var(--green)" : "var(--text-mid)" }}>{requireApproval ? "ON" : "OFF"}</strong>
+          <span title={requireApproval ? tr("New accounts wait for an R4 or Admin to approve them") : tr("New accounts can use the hub right away")}>
+            🔐 {tr("New account approval")}: <strong style={{ color: requireApproval ? "var(--green)" : "var(--text-mid)" }}>{requireApproval ? tr("ON") : tr("OFF")}</strong>
           </span>
           <button className={`btn btn-sm ${requireApproval ? "btn-secondary" : "btn-green"}`} style={{ padding: "3px 10px", fontSize: 12 }} onClick={toggleRequireApproval}>
-            {requireApproval ? "Turn off" : "Turn on"}
+            {requireApproval ? tr("Turn off") : tr("Turn on")}
           </button>
         </div>
       )}
@@ -4863,7 +4990,7 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
               <div className="card-body" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                 <div>
                   <div style={{ fontWeight: 700 }}>{m.username}</div>
-                  <div style={{ fontSize: 13, color: "var(--text-dim)" }}>{m.profession} • Joined {formatDate(m.joinDate)}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-dim)" }}>{m.profession === "engineer" ? tr("Engineer") : tr("War Leader")} • {tr("Joined")} {formatDate(m.joinDate)}</div>
                 </div>
                 <div className="row" style={{ gap: 6 }}>
                   <button className="btn btn-sm btn-green" onClick={() => approve(m.id)}>{t.approve}</button>
@@ -4875,40 +5002,40 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
         </div>
       )}
       <div className="members-tools">
-        <input className="form-input" value={memberSearch} onChange={e => setMemberSearch(e.target.value)} placeholder={`🔍 Search ${filteredMembers.length} members`} aria-label="Search members" />
-        <button className={`btn btn-sm ${showDisabled ? "btn-primary" : "btn-secondary"}`} onClick={() => setShowDisabled(d => !d)} title={showDisabled ? "Hide disabled members" : "Show disabled members"}>{showDisabled ? "🙈 Disabled" : "👁 Disabled"}</button>
-        {isAdmin && <button className="btn btn-sm btn-secondary" onClick={exportMembers} title="Export CSV" aria-label="Export CSV">⬇️</button>}
+        <input className="form-input" value={memberSearch} onChange={e => setMemberSearch(e.target.value)} placeholder={"🔍 " + tr("Search {n} members", { n: filteredMembers.length })} aria-label={tr("Search members")} />
+        <button className={`btn btn-sm ${showDisabled ? "btn-primary" : "btn-secondary"}`} onClick={() => setShowDisabled(d => !d)} title={showDisabled ? tr("Hide disabled members") : tr("Show disabled members")}>{showDisabled ? "🙈 " + tr("Disabled") : "👁 " + tr("Disabled")}</button>
+        {isAdmin && <button className="btn btn-sm btn-secondary" onClick={exportMembers} title={tr("Export CSV")} aria-label={tr("Export CSV")}>⬇️</button>}
       </div>
       <table className="data-table members-table">
         <colgroup><col /><col style={{ width: 48 }} /><col style={{ width: 80 }} /><col style={{ width: 32 }} /><col style={{ width: 28 }} /></colgroup>
         <thead><tr>
-          <th onClick={() => toggleMemberSort("username")}>Player{sortArrow("username")}</th>
-          <th onClick={() => toggleMemberSort("power")}>Pwr{sortArrow("power")}</th>
-          <th onClick={() => toggleMemberSort("role")}>Role{sortArrow("role")}</th>
-          <th onClick={() => toggleMemberSort("signupCount")} title="Storm sign-ups">SU{sortArrow("signupCount")}</th>
-          <th aria-label="Actions"></th>
+          <th onClick={() => toggleMemberSort("username")}>{tr("Player")}{sortArrow("username")}</th>
+          <th onClick={() => toggleMemberSort("power")}>{tr("Pwr")}{sortArrow("power")}</th>
+          <th onClick={() => toggleMemberSort("role")}>{tr("Role")}{sortArrow("role")}</th>
+          <th onClick={() => toggleMemberSort("signupCount")} title={tr("Storm sign-ups")}>{tr("SU")}{sortArrow("signupCount")}</th>
+          <th aria-label={tr("Actions")}></th>
         </tr></thead>
         <tbody>
           {filteredMembers.map((m, i) => (
             <tr key={m.id} style={{ background: i % 2 === 0 ? "transparent" : "var(--surface2)", opacity: m.disabled ? 0.5 : 1 }}>
               <td className={m.profession === "engineer" ? "name-engineer" : "name-warleader"}>
                 <span className="member-name" onClick={() => setViewMember && setViewMember(m)}>
-                  <span aria-hidden="true">{m.profession === "engineer" ? "🔧" : "⚔️"}</span> {m.username}{m.disabled && <span className="member-off">off</span>}
+                  <span aria-hidden="true">{m.profession === "engineer" ? "🔧" : "⚔️"}</span> {m.username}{m.disabled && <span className="member-off">{tr("off")}</span>}
                 </span>
               </td>
               <td>{m.power ? (m.power / 1000000).toFixed(1) + "M" : "—"}</td>
               <td>
                 {isAdmin ? (
-                  <select className="member-role" value={m.role} onChange={e => changeRole(m.id, e.target.value)} aria-label={`Role for ${m.username}`}>
-                    <option value="member">Member</option>
+                  <select className="member-role" value={m.role} onChange={e => changeRole(m.id, e.target.value)} aria-label={tr("Role for {name}", { name: m.username })}>
+                    <option value="member">{tr("Member")}</option>
                     <option value="r4">R4</option>
-                    <option value="admin">Admin</option>
+                    <option value="admin">{tr("Admin")}</option>
                   </select>
-                ) : <span className="badge badge-gold" style={{ fontSize: 10, padding: "2px 6px" }}>{m.role}</span>}
+                ) : <span className="badge badge-gold" style={{ fontSize: 10, padding: "2px 6px" }}>{roleLabel(m.role)}</span>}
               </td>
               <td style={{ textAlign: "center" }}>{m.signupCount || 0}</td>
               <td style={{ textAlign: "center" }}>
-                <button type="button" className="member-more" onClick={() => setActionsFor(m)} aria-label={`Actions for ${m.username}`}>⋯</button>
+                <button type="button" className="member-more" onClick={() => setActionsFor(m)} aria-label={tr("Actions for {name}", { name: m.username })}>⋯</button>
               </td>
             </tr>
           ))}
@@ -4921,14 +5048,14 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 340 }}>
             <div className="modal-header">
               <div className="modal-title">{actionsFor.username}</div>
-              <button className="btn btn-ghost btn-sm" onClick={() => setActionsFor(null)} aria-label="Close">✕</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => setActionsFor(null)} aria-label={tr("Close")}>✕</button>
             </div>
             <div className="modal-body stack" style={{ gap: 8 }}>
-              {isAdmin && <div className="form-hint" style={{ margin: 0 }}>Member ID: <span style={{ fontFamily: "monospace" }}>{actionsFor.memberId}</span></div>}
-              <button className="btn btn-secondary btn-full" onClick={() => { setViewMember && setViewMember(actionsFor); setActionsFor(null); }}>👤 View profile</button>
-              <button className="btn btn-secondary btn-full" onClick={() => { setResetModal({ id: actionsFor.id, username: actionsFor.username }); setTempPw(""); setActionsFor(null); }}>🔑 Reset password</button>
-              {actionsFor.id !== user.id && <button className="btn btn-secondary btn-full" onClick={() => { toggleDisable(actionsFor.id, actionsFor.disabled); setActionsFor(null); }}>{actionsFor.disabled ? "▶️ Enable member" : "⏸ Disable member"}</button>}
-              {actionsFor.id !== user.id && <button className="btn btn-danger btn-full" onClick={() => { if (window.confirm(`Delete ${actionsFor.username}? This can't be undone.`)) { deleteMember(actionsFor.id); setActionsFor(null); } }}>🗑️ Delete member</button>}
+              {isAdmin && <div className="form-hint" style={{ margin: 0 }}>{tr("Member ID")}: <span style={{ fontFamily: "monospace" }}>{actionsFor.memberId}</span></div>}
+              <button className="btn btn-secondary btn-full" onClick={() => { setViewMember && setViewMember(actionsFor); setActionsFor(null); }}>👤 {tr("View profile")}</button>
+              <button className="btn btn-secondary btn-full" onClick={() => { setResetModal({ id: actionsFor.id, username: actionsFor.username }); setTempPw(""); setActionsFor(null); }}>🔑 {tr("Reset password")}</button>
+              {actionsFor.id !== user.id && <button className="btn btn-secondary btn-full" onClick={() => { toggleDisable(actionsFor.id, actionsFor.disabled); setActionsFor(null); }}>{actionsFor.disabled ? "▶️ " + tr("Enable member") : "⏸ " + tr("Disable member")}</button>}
+              {actionsFor.id !== user.id && <button className="btn btn-danger btn-full" onClick={() => { if (window.confirm(tr("Delete {name}? This can't be undone.", { name: actionsFor.username }))) { deleteMember(actionsFor.id); setActionsFor(null); } }}>🗑️ {tr("Delete member")}</button>}
             </div>
           </div>
         </div>
@@ -4939,19 +5066,19 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
         <div className="modal-overlay" onClick={() => setResetModal(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title">🔒 Reset Password — {resetModal.username}</div>
+              <div className="modal-title">🔒 {t.resetPassword} — {resetModal.username}</div>
               <button className="btn btn-ghost btn-sm" onClick={() => setResetModal(null)}>✕</button>
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label className="form-label">Set Temporary Password</label>
-                <input className="form-input" value={tempPw} onChange={e => setTempPw(e.target.value)} placeholder="Enter a temporary password" />
-                <div className="form-hint">Tell the member this password so they can log in and change it themselves.</div>
+                <label className="form-label">{tr("Set Temporary Password")}</label>
+                <input className="form-input" value={tempPw} onChange={e => setTempPw(e.target.value)} placeholder={tr("Enter a temporary password")} />
+                <div className="form-hint">{tr("Tell the member this password so they can log in and change it themselves.")}</div>
               </div>
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={() => setResetModal(null)}>{t.cancel}</button>
-              <button className="btn btn-primary" onClick={doReset}>Reset Password</button>
+              <button className="btn btn-primary" onClick={doReset}>{t.resetPassword}</button>
             </div>
           </div>
         </div>
@@ -4962,19 +5089,19 @@ function AdminMembers({ setViewMember, members, setMembers, t, showToast, isAdmi
         <div className="modal-overlay" onClick={() => setResetDone(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title">✅ Password Reset</div>
+              <div className="modal-title">✅ {tr("Password Reset")}</div>
               <button className="btn btn-ghost btn-sm" onClick={() => setResetDone(null)}>✕</button>
             </div>
             <div className="modal-body">
               <div style={{ textAlign: "center", padding: "12px 0" }}>
                 <div style={{ fontSize: 40, marginBottom: 12 }}>🔑</div>
-                <div style={{ marginBottom: 8 }}>Password for <strong>{resetDone.username}</strong> has been reset to:</div>
+                <div style={{ marginBottom: 8 }}>{trRich("Password for <b>{name}</b> has been reset to:", { name: resetDone.username })}</div>
                 <div style={{ background: "var(--surface2)", borderRadius: 10, padding: "14px 20px", fontSize: 22, fontWeight: 700, letterSpacing: 2, fontFamily: "monospace", color: "var(--gold)", marginBottom: 12 }}>{resetDone.password}</div>
-                <div style={{ fontSize: 13, color: "var(--text-dim)" }}>Share this with the member so they can log in and change their password.</div>
+                <div style={{ fontSize: 13, color: "var(--text-dim)" }}>{tr("Share this with the member so they can log in and change their password.")}</div>
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary btn-full" onClick={() => { navigator.clipboard?.writeText(resetDone.password); showToast("Copied!"); setResetDone(null); }}>📋 Copy & Close</button>
+              <button className="btn btn-primary btn-full" onClick={() => { navigator.clipboard?.writeText(resetDone.password); showToast(tr("Copied!")); setResetDone(null); }}>📋 {tr("Copy & Close")}</button>
             </div>
           </div>
         </div>
@@ -5023,7 +5150,7 @@ function AdminData({ members, csSignups, dsSignups, t, showToast, setMembers }) 
   };
 
   const resetSignupCounts = async () => {
-    if (!window.confirm("Recalculate signup counts from actual signup data? This fixes inflated counts from past bugs.")) return;
+    if (!window.confirm(tr("Recalculate signup counts from actual signup data? This fixes inflated counts from past bugs."))) return;
     setResetting(true);
     // Count unique BATTLE WEEKS per member (normalize all dates to battle date)
     for (const m of approved) {
@@ -5034,7 +5161,7 @@ function AdminData({ members, csSignups, dsSignups, t, showToast, setMembers }) 
       setMembers(prev => prev.map(mb => String(mb.id) === String(m.id) ? { ...mb, signupCount: total } : mb));
     }
     setResetting(false);
-    showToast("Signup counts reset ✓");
+    showToast(tr("Signup counts reset ✓"));
   };
 
   return (
@@ -5042,10 +5169,10 @@ function AdminData({ members, csSignups, dsSignups, t, showToast, setMembers }) 
       {/* Fix inflated counts */}
       <div style={{ marginBottom: 16, display: "flex", justifyContent: "flex-end" }}>
         <button className="btn btn-sm btn-secondary" onClick={resetSignupCounts} disabled={resetting}>
-          {resetting ? "Resetting..." : "🔄 Recalculate Signup Counts"}
+          {resetting ? tr("Resetting...") : "🔄 " + tr("Recalculate Signup Counts")}
         </button>
         <button className="btn btn-sm btn-danger" style={{ marginLeft: 8 }} onClick={async () => {
-          if (!window.confirm("Delete duplicate signup rows from database? This is safe and permanent.")) return;
+          if (!window.confirm(tr("Delete duplicate signup rows from database? This is safe and permanent."))) return;
           // For each member+week combo, keep only the latest row and delete the rest
           const { data: csRows } = await supabase.from("canyon_signups").select("id,member_id,week_start").order("updated_at", { ascending: false });
           const { data: dsRows } = await supabase.from("desert_signups").select("id,member_id,week_start").order("updated_at", { ascending: false });
@@ -5058,22 +5185,22 @@ function AdminData({ members, csSignups, dsSignups, t, showToast, setMembers }) 
           const dsDupes = getDupes(dsRows);
           if (csDupes.length > 0) await supabase.from("canyon_signups").delete().in("id", csDupes);
           if (dsDupes.length > 0) await supabase.from("desert_signups").delete().in("id", dsDupes);
-          showToast(`Removed ${csDupes.length + dsDupes.length} duplicate rows ✓`);
-        }}>🗑️ Remove Duplicate Signups</button>
+          showToast(tr("Removed {n} duplicate rows ✓", { n: csDupes.length + dsDupes.length }));
+        }}>🗑️ {tr("Remove Duplicate Signups")}</button>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
         <div className="card">
           <div className="card-body" style={{ textAlign: "center" }}>
             <div style={{ fontSize: 32, marginBottom: 4 }}>🔧</div>
             <div style={{ fontSize: 28, fontWeight: 700, color: "var(--green)" }}>{engineers}</div>
-            <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 2 }}>Engineers</div>
+            <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 2 }}>{tr("Engineers")}</div>
           </div>
         </div>
         <div className="card">
           <div className="card-body" style={{ textAlign: "center" }}>
             <div style={{ fontSize: 32, marginBottom: 4 }}>⚔️</div>
             <div style={{ fontSize: 28, fontWeight: 700, color: "var(--purple)" }}>{warLeaders}</div>
-            <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 2 }}>War Leaders</div>
+            <div style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 2 }}>{tr("War Leaders")}</div>
           </div>
         </div>
       </div>
@@ -5082,15 +5209,15 @@ function AdminData({ members, csSignups, dsSignups, t, showToast, setMembers }) 
         <div className="card-header"><div className="card-title">📊 {t.signupFrequency}</div></div>
         <div style={{ overflowX: "auto" }}>
           <table className="data-table">
-            <thead><tr><th>Member</th><th>Role</th><th>Sign-Ups</th><th>{t.attendance}</th><th>Rate</th></tr></thead>
+            <thead><tr><th>{tr("Member")}</th><th>{tr("Role")}</th><th>{tr("Sign-Ups")}</th><th>{t.attendance}</th><th>{tr("Rate")}</th></tr></thead>
             <tbody>
               {approved.sort((a, b) => b.signupCount - a.signupCount).map(m => (
                 <tr key={m.id}>
                   <td className={m.profession === "engineer" ? "name-engineer" : "name-warleader"}>{m.username}</td>
-                  <td><span className="badge badge-gold">{m.role}</span></td>
+                  <td><span className="badge badge-gold">{roleLabel(m.role)}</span></td>
                   <td style={{ fontWeight: 700 }}>{m.signupCount}</td>
                   <td>{m.attendanceCount}</td>
-                  <td><span className={`badge ${m.signupCount > 0 && m.attendanceCount / m.signupCount > 0.8 ? "badge-green" : "badge-gold"}`}>{m.signupCount > 0 ? Math.round(m.attendanceCount / m.signupCount * 100) + "%" : "N/A"}</span></td>
+                  <td><span className={`badge ${m.signupCount > 0 && m.attendanceCount / m.signupCount > 0.8 ? "badge-green" : "badge-gold"}`}>{m.signupCount > 0 ? Math.round(m.attendanceCount / m.signupCount * 100) + "%" : tr("N/A")}</span></td>
                 </tr>
               ))}
             </tbody>
@@ -5100,10 +5227,10 @@ function AdminData({ members, csSignups, dsSignups, t, showToast, setMembers }) 
 
       {/* Power Growth */}
       <div className="card">
-        <div className="card-header"><div className="card-title">📈 Member Power Growth (Week over Week)</div></div>
+        <div className="card-header"><div className="card-title">📈 {tr("Member Power Growth (Week over Week)")}</div></div>
         <div style={{ overflowX: "auto" }}>
           <table className="data-table">
-            <thead><tr><th>Member</th><th>Current Power</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Jan</th><th>Growth</th></tr></thead>
+            <thead><tr><th>{tr("Member")}</th><th>{tr("Current Power")}</th><th>{tr("Oct")}</th><th>{tr("Nov")}</th><th>{tr("Dec")}</th><th>{tr("Jan")}</th><th>{tr("Growth")}</th></tr></thead>
             <tbody>
               {approved.filter(m => m.power > 0).sort((a, b) => b.power - a.power).map(m => {
                 const history = MOCK_POWER_HISTORY[m.id] || [];
@@ -5144,12 +5271,12 @@ function TrainCountdown({ target }) {
   const countdown = useCountdown(target);
   const isPast = new Date(target) < Date.now();
   if (isPast) return null;
-  return <div style={{ fontSize: 13, color: "var(--gold)", fontWeight: 600, marginTop: 4 }}>⏱ Starts in {countdown}</div>;
+  return <div style={{ fontSize: 13, color: "var(--gold)", fontWeight: 600, marginTop: 4 }}>⏱ {tr("Starts in")} {countdown}</div>;
 }
 
 // ─── TRAINS PAGE (Member view) ────────────────────────────────────────────────
 function TrainsPage({ user, trains, trainGoals, members }) {
-  const getName = (id) => members.find(m => String(m.id) === String(id))?.username || "TBD";
+  const getName = (id) => members.find(m => String(m.id) === String(id))?.username || tr("TBD");
   const today = serverToday();
 
   // Get current week start (Monday)
@@ -5164,53 +5291,53 @@ function TrainsPage({ user, trains, trainGoals, members }) {
   const thisWeek = getWeekStart(today);
   const nextWeek = getWeekStart(new Date(serverNow().getTime() + 7 * 86400000).toISOString().split("T")[0]);
 
-  const thisWeekTrains = trains.filter(tr => getWeekStart(tr.date) === thisWeek).sort((a,b) => a.date.localeCompare(b.date));
+  const thisWeekTrains = trains.filter(trn => getWeekStart(trn.date) === thisWeek).sort((a,b) => a.date.localeCompare(b.date));
   const nextWeekGoal = trainGoals.find(g => g.weekStart === nextWeek);
   const thisWeekGoal = trainGoals.find(g => g.weekStart === thisWeek);
 
-  const upcomingTrains = trains.filter(tr => tr.date >= today).sort((a,b) => a.date.localeCompare(b.date)).slice(0, 14);
+  const upcomingTrains = trains.filter(trn => trn.date >= today).sort((a,b) => a.date.localeCompare(b.date)).slice(0, 14);
 
   return (
     <div>
-      <h1 style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: 22, marginBottom: 4 }}>🚂 Trains</h1>
-      <p style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 20 }}>Daily train schedule and weekly goals</p>
+      <h1 style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: 22, marginBottom: 4 }}>🚂 {tr("Trains")}</h1>
+      <p style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 20 }}>{tr("Daily train schedule and weekly goals")}</p>
 
       {/* Next week goal */}
       {(nextWeekGoal || thisWeekGoal) && (
         <div className="card" style={{ marginBottom: 20 }}>
           <div className="card-body">
-            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>📋 Next Week's Goal</div>
-            <div style={{ fontSize: 15, color: "var(--text)", lineHeight: 1.6 }}>{nextWeekGoal?.goal || thisWeekGoal?.goal || "Goal not set yet."}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--gold)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>📋 {tr("Next Week's Goal")}</div>
+            <div style={{ fontSize: 15, color: "var(--text)", lineHeight: 1.6 }}>{nextWeekGoal?.goal || thisWeekGoal?.goal ? <AutoText text={nextWeekGoal?.goal || thisWeekGoal?.goal} /> : tr("Goal not set yet.")}</div>
           </div>
         </div>
       )}
 
       {/* This week schedule */}
-      <div style={{ fontWeight: 700, marginBottom: 12, fontSize: 15 }}>📅 This Week's Schedule</div>
+      <div style={{ fontWeight: 700, marginBottom: 12, fontSize: 15 }}>📅 {tr("This Week's Schedule")}</div>
       {thisWeekTrains.length === 0 && (
-        <div style={{ color: "var(--text-dim)", textAlign: "center", padding: 30 }}>No trains scheduled this week yet.</div>
+        <div style={{ color: "var(--text-dim)", textAlign: "center", padding: 30 }}>{tr("No trains scheduled this week yet.")}</div>
       )}
-      {upcomingTrains.map(tr => {
-        const isMe = String(tr.conductorId) === String(user.id) || String(tr.guardianId) === String(user.id);
-        const myRole = String(tr.conductorId) === String(user.id) ? "Conductor 🚂" : String(tr.guardianId) === String(user.id) ? "Guardian 🛡️" : null;
-        const trainDt = parseTrainTime(tr.date, tr.time);
+      {upcomingTrains.map(trn => {
+        const isMe = String(trn.conductorId) === String(user.id) || String(trn.guardianId) === String(user.id);
+        const myRole = String(trn.conductorId) === String(user.id) ? tr("Conductor") + " 🚂" : String(trn.guardianId) === String(user.id) ? tr("Guardian") + " 🛡️" : null;
+        const trainDt = parseTrainTime(trn.date, trn.time);
         const isPast = trainDt < Date.now();
         return (
-          <div key={tr.id} className="card" style={{ marginBottom: 8, opacity: isPast ? 0.6 : 1, border: isMe ? "1.5px solid var(--gold)" : undefined }}>
+          <div key={trn.id} className="card" style={{ marginBottom: 8, opacity: isPast ? 0.6 : 1, border: isMe ? "1.5px solid var(--gold)" : undefined }}>
             <div className="card-body">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 15, color: isMe ? "var(--gold)" : "var(--text)" }}>
-                    {tr.date} — {tr.time} server time
-                    {isMe && <span className="badge badge-gold" style={{ marginLeft: 8, fontSize: 11 }}>You: {myRole}</span>}
+                    {trn.date} — {trn.time} {tr("server time")}
+                    {isMe && <span className="badge badge-gold" style={{ marginLeft: 8, fontSize: 11 }}>{tr("You")}: {myRole}</span>}
                   </div>
                   <div style={{ fontSize: 13, color: "var(--text-mid)", marginTop: 4 }}>
-                    🚂 Conductor: <strong>{getName(tr.conductorId)}</strong> &nbsp;|&nbsp; 🛡️ Guardian: <strong>{getName(tr.guardianId)}</strong>
+                    🚂 {tr("Conductor")}: <strong>{getName(trn.conductorId)}</strong> &nbsp;|&nbsp; 🛡️ {tr("Guardian")}: <strong>{getName(trn.guardianId)}</strong>
                   </div>
                   {isMe && !isPast && <TrainCountdown target={trainDt} />}
                 </div>
-                {!isPast && <span className="badge badge-green">Upcoming</span>}
-                {isPast && <span className="badge badge-gray">Done</span>}
+                {!isPast && <span className="badge badge-green">{tr("Upcoming")}</span>}
+                {isPast && <span className="badge badge-gray">{tr("Done")}</span>}
               </div>
             </div>
           </div>
@@ -5247,21 +5374,21 @@ function AdminTrains({ trains, trainGoals, members, showToast }) {
   const currentGoal = trainGoals.find(g => g.weekStart === nextWeek);
 
   const saveTrain = async () => {
-    if (!form.date || !form.time) { showToast("Please fill date and time."); return; }
+    if (!form.date || !form.time) { showToast(tr("Please fill date and time.")); return; }
     const weekStart = getWeekStart(form.date);
     if (editTrain) {
       await supabase.from("trains").update({
         train_time: form.time ? form.time.split(":").map(p => p.padStart(2,"0")).join(":") : form.time, conductor_id: form.conductorId || null,
         guardian_id: form.guardianId || null, updated_at: new Date(),
       }).eq("id", editTrain.id);
-      showToast("Train updated ✓");
+      showToast(tr("Train updated ✓"));
     } else {
       const { error } = await supabase.from("trains").upsert({
         train_date: form.date, train_time: form.time ? form.time.split(":").map(p => p.padStart(2,"0")).join(":") : form.time, week_start: weekStart,
         conductor_id: form.conductorId || null, guardian_id: form.guardianId || null,
       }, { onConflict: "train_date" });
-      if (error) { showToast("Error saving train."); return; }
-      showToast("Train saved ✓");
+      if (error) { showToast(tr("Error saving train.")); return; }
+      showToast(tr("Train saved ✓"));
     }
     setEditTrain(null);
     setForm({ date: "", time: "14:00", conductorId: "", guardianId: "" });
@@ -5269,12 +5396,12 @@ function AdminTrains({ trains, trainGoals, members, showToast }) {
 
   const deleteTrain = async (id) => {
     await supabase.from("trains").delete().eq("id", id);
-    showToast("Train removed.");
+    showToast(tr("Train removed."));
   };
 
-  const startEdit = (tr) => {
-    setEditTrain(tr);
-    setForm({ date: tr.date, time: tr.time, conductorId: tr.conductorId || "", guardianId: tr.guardianId || "" });
+  const startEdit = (trn) => {
+    setEditTrain(trn);
+    setForm({ date: trn.date, time: trn.time, conductorId: trn.conductorId || "", guardianId: trn.guardianId || "" });
     setTab("schedule");
   };
 
@@ -5287,77 +5414,77 @@ function AdminTrains({ trains, trainGoals, members, showToast }) {
       await supabase.from("train_goals").insert({ week_start: nextWeek, goal: goalForm });
     }
     setSavingGoal(false);
-    showToast("Goal saved ✓");
+    showToast(tr("Goal saved ✓"));
   };
 
-  const upcoming = trains.filter(tr => tr.date >= today).sort((a,b) => a.date.localeCompare(b.date));
-  const historical = trains.filter(tr => tr.date < today).sort((a,b) => b.date.localeCompare(a.date));
+  const upcoming = trains.filter(trn => trn.date >= today).sort((a,b) => a.date.localeCompare(b.date));
+  const historical = trains.filter(trn => trn.date < today).sort((a,b) => b.date.localeCompare(a.date));
 
   return (
     <div>
       <div className="tabs" style={{ marginBottom: 16 }}>
-        <button className={`tab ${tab === "schedule" ? "active" : ""}`} onClick={() => setTab("schedule")}>📅 Schedule</button>
-        <button className={`tab ${tab === "goal" ? "active" : ""}`} onClick={() => setTab("goal")}>🎯 Goal</button>
-        <button className={`tab ${tab === "history" ? "active" : ""}`} onClick={() => setTab("history")}>📜 History</button>
+        <button className={`tab ${tab === "schedule" ? "active" : ""}`} onClick={() => setTab("schedule")}>📅 {tr("Schedule")}</button>
+        <button className={`tab ${tab === "goal" ? "active" : ""}`} onClick={() => setTab("goal")}>🎯 {tr("Goal")}</button>
+        <button className={`tab ${tab === "history" ? "active" : ""}`} onClick={() => setTab("history")}>📜 {tr("History")}</button>
       </div>
 
       {tab === "schedule" && (
         <div>
           {/* Add/Edit Train Form */}
           <div className="card" style={{ marginBottom: 20 }}>
-            <div className="card-header"><div className="card-title">{editTrain ? "✏️ Edit Train" : "➕ Add Train"}</div></div>
+            <div className="card-header"><div className="card-title">{editTrain ? "✏️ " + tr("Edit Train") : "➕ " + tr("Add Train")}</div></div>
             <div className="card-body">
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div className="form-group">
-                  <label className="form-label">Date</label>
+                  <label className="form-label">{tr("Date")}</label>
                   <input className="form-input" type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Time (Server = UTC 24hr)</label>
-                  <input className="form-input" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} placeholder="e.g. 14:00" />
-                  <div className="form-hint" style={{ color: "var(--gold)", fontWeight: 600 }}>🕐 Current server time: {(() => { const n = new Date(); const sn = new Date(n.getTime() - SERVER_UTC_OFFSET_HOURS * 3600000); return String(sn.getUTCHours()).padStart(2,"0") + ":" + String(sn.getUTCMinutes()).padStart(2,"0"); })()}</div>
+                  <label className="form-label">{tr("Time (Server = UTC 24hr)")}</label>
+                  <input className="form-input" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} placeholder={tr("e.g. 14:00")} />
+                  <div className="form-hint" style={{ color: "var(--gold)", fontWeight: 600 }}>🕐 {tr("Current server time")}: {(() => { const n = new Date(); const sn = new Date(n.getTime() - SERVER_UTC_OFFSET_HOURS * 3600000); return String(sn.getUTCHours()).padStart(2,"0") + ":" + String(sn.getUTCMinutes()).padStart(2,"0"); })()}</div>
                 </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div className="form-group">
-                  <label className="form-label">🚂 Conductor</label>
-                  <input className="form-input" placeholder="Search..." value={memberSearch.conductor} onChange={e => setMemberSearch(s => ({ ...s, conductor: e.target.value }))} style={{ marginBottom: 4 }} />
+                  <label className="form-label">🚂 {tr("Conductor")}</label>
+                  <input className="form-input" placeholder={tr("Search...")} value={memberSearch.conductor} onChange={e => setMemberSearch(s => ({ ...s, conductor: e.target.value }))} style={{ marginBottom: 4 }} />
                   <select className="form-input form-select" value={form.conductorId} onChange={e => setForm(f => ({ ...f, conductorId: e.target.value }))}>
-                    <option value="">— Select member —</option>
+                    <option value="">— {tr("Select member")} —</option>
                     {filteredConductors.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">🛡️ Guardian</label>
-                  <input className="form-input" placeholder="Search..." value={memberSearch.guardian} onChange={e => setMemberSearch(s => ({ ...s, guardian: e.target.value }))} style={{ marginBottom: 4 }} />
+                  <label className="form-label">🛡️ {tr("Guardian")}</label>
+                  <input className="form-input" placeholder={tr("Search...")} value={memberSearch.guardian} onChange={e => setMemberSearch(s => ({ ...s, guardian: e.target.value }))} style={{ marginBottom: 4 }} />
                   <select className="form-input form-select" value={form.guardianId} onChange={e => setForm(f => ({ ...f, guardianId: e.target.value }))}>
-                    <option value="">— Select member —</option>
+                    <option value="">— {tr("Select member")} —</option>
                     {filteredGuardians.map(m => <option key={m.id} value={m.id}>{m.username}</option>)}
                   </select>
                 </div>
               </div>
               <div className="row" style={{ gap: 8 }}>
-                <button className="btn btn-primary" onClick={saveTrain}>💾 {editTrain ? "Update" : "Save"} Train</button>
-                {editTrain && <button className="btn btn-secondary" onClick={() => { setEditTrain(null); setForm({ date: "", time: "14:00", conductorId: "", guardianId: "" }); }}>Cancel</button>}
+                <button className="btn btn-primary" onClick={saveTrain}>💾 {editTrain ? tr("Update Train") : tr("Save Train")}</button>
+                {editTrain && <button className="btn btn-secondary" onClick={() => { setEditTrain(null); setForm({ date: "", time: "14:00", conductorId: "", guardianId: "" }); }}>{tr("Cancel")}</button>}
               </div>
             </div>
           </div>
 
           {/* Upcoming trains */}
-          <div style={{ fontWeight: 700, marginBottom: 10 }}>Upcoming Trains ({upcoming.length})</div>
-          {upcoming.length === 0 && <div style={{ color: "var(--text-dim)", padding: 20, textAlign: "center" }}>No upcoming trains scheduled.</div>}
-          {upcoming.map(tr => (
-            <div key={tr.id} className="card" style={{ marginBottom: 8 }}>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>{tr("Upcoming Trains")} ({upcoming.length})</div>
+          {upcoming.length === 0 && <div style={{ color: "var(--text-dim)", padding: 20, textAlign: "center" }}>{tr("No upcoming trains scheduled.")}</div>}
+          {upcoming.map(trn => (
+            <div key={trn.id} className="card" style={{ marginBottom: 8 }}>
               <div className="card-body" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                 <div>
-                  <div style={{ fontWeight: 700 }}>{tr.date} — {tr.time} server time</div>
+                  <div style={{ fontWeight: 700 }}>{trn.date} — {trn.time} {tr("server time")}</div>
                   <div style={{ fontSize: 13, color: "var(--text-mid)", marginTop: 2 }}>
-                    🚂 {getName(tr.conductorId)} &nbsp;|&nbsp; 🛡️ {getName(tr.guardianId)}
+                    🚂 {getName(trn.conductorId)} &nbsp;|&nbsp; 🛡️ {getName(trn.guardianId)}
                   </div>
                 </div>
                 <div className="row" style={{ gap: 6 }}>
-                  <button className="btn btn-sm btn-secondary" onClick={() => startEdit(tr)}>✏️</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => deleteTrain(tr.id)}>✕</button>
+                  <button className="btn btn-sm btn-secondary" onClick={() => startEdit(trn)}>✏️</button>
+                  <button className="btn btn-sm btn-danger" onClick={() => deleteTrain(trn.id)}>✕</button>
                 </div>
               </div>
             </div>
@@ -5368,14 +5495,14 @@ function AdminTrains({ trains, trainGoals, members, showToast }) {
       {tab === "goal" && (
         <div>
           <div className="card">
-            <div className="card-header"><div className="card-title">🎯 Next Week's Goal</div></div>
+            <div className="card-header"><div className="card-title">🎯 {tr("Next Week's Goal")}</div></div>
             <div className="card-body">
-              <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 12 }}>Week of {nextWeek}</div>
+              <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 12 }}>{tr("Week of {date}", { date: nextWeek })}</div>
               <div className="form-group">
-                <label className="form-label">Goal Description</label>
-                <textarea className="form-input" rows={4} value={goalForm || currentGoal?.goal || ""} onChange={e => setGoalForm(e.target.value)} placeholder="e.g. Reach level 25 on all buildings, focus on barracks upgrades..." style={{ resize: "vertical" }} />
+                <label className="form-label">{tr("Goal Description")}</label>
+                <textarea className="form-input" rows={4} value={goalForm || currentGoal?.goal || ""} onChange={e => setGoalForm(e.target.value)} placeholder={tr("e.g. Reach level 25 on all buildings, focus on barracks upgrades...")} style={{ resize: "vertical" }} />
               </div>
-              <button className="btn btn-primary" onClick={saveGoal} disabled={savingGoal}>{savingGoal ? "Saving..." : "💾 Save Goal"}</button>
+              <button className="btn btn-primary" onClick={saveGoal} disabled={savingGoal}>{savingGoal ? tr("Saving...") : "💾 " + tr("Save Goal")}</button>
             </div>
           </div>
         </div>
@@ -5383,14 +5510,14 @@ function AdminTrains({ trains, trainGoals, members, showToast }) {
 
       {tab === "history" && (
         <div>
-          <div style={{ fontWeight: 700, marginBottom: 10 }}>Past Trains ({historical.length})</div>
-          {historical.length === 0 && <div style={{ color: "var(--text-dim)", padding: 20, textAlign: "center" }}>No train history yet.</div>}
-          {historical.map(tr => (
-            <div key={tr.id} className="card" style={{ marginBottom: 8, opacity: 0.7 }}>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>{tr("Past Trains")} ({historical.length})</div>
+          {historical.length === 0 && <div style={{ color: "var(--text-dim)", padding: 20, textAlign: "center" }}>{tr("No train history yet.")}</div>}
+          {historical.map(trn => (
+            <div key={trn.id} className="card" style={{ marginBottom: 8, opacity: 0.7 }}>
               <div className="card-body">
-                <div style={{ fontWeight: 700 }}>{tr.date} — {tr.time} server time</div>
+                <div style={{ fontWeight: 700 }}>{trn.date} — {trn.time} {tr("server time")}</div>
                 <div style={{ fontSize: 13, color: "var(--text-mid)", marginTop: 2 }}>
-                  🚂 {getName(tr.conductorId)} &nbsp;|&nbsp; 🛡️ {getName(tr.guardianId)}
+                  🚂 {getName(trn.conductorId)} &nbsp;|&nbsp; 🛡️ {getName(trn.guardianId)}
                 </div>
               </div>
             </div>
@@ -5560,36 +5687,36 @@ function WeaponShardsCalc() {
     <div>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-body" style={{ background: "linear-gradient(135deg, var(--gold) 0%, #a67c2e 100%)", borderRadius: 10, marginBottom: 16, padding: "16px" }}>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>⚔️ Weapon Shards Calculator</div>
-          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 4 }}>Calculate shards needed to level up exclusive weapons</div>
+          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>⚔️ {tr("Weapon Shards Calculator")}</div>
+          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 4 }}>{tr("Calculate shards needed to level up exclusive weapons")}</div>
         </div>
-        <LevelSelector label="From Level" value={fromLevel} setValue={setFromLevel} min={1} max={maxLevel} />
-        <LevelSelector label="To Level" value={toLevel} setValue={setToLevel} min={1} max={maxLevel} />
+        <LevelSelector label={tr("From Level")} value={fromLevel} setValue={setFromLevel} min={1} max={maxLevel} />
+        <LevelSelector label={tr("To Level")} value={toLevel} setValue={setToLevel} min={1} max={maxLevel} />
         <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginTop: 12, fontSize: 14, color: "var(--text-mid)" }}>
           <input type="checkbox" checked={includeUnlock} onChange={e => setIncludeUnlock(e.target.checked)} />
-          <span>Include Weapon Unlock Cost (+50 shards)</span>
+          <span>{tr("Include Weapon Unlock Cost (+50 shards)")}</span>
         </label>
       </div>
 
       <ResultCard>
-        <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 8 }}>Total Shards Required — Level {safeFrom} → {safeTo}</div>
-        <div style={{ fontSize: 48, fontWeight: 800, color: "var(--gold)" }}>{totalShards.toLocaleString()}</div>
+        <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 8 }}>{tr("Total Shards Required — Level {from} → {to}", { from: safeFrom, to: safeTo })}</div>
+        <div style={{ fontSize: 48, fontWeight: 800, color: "var(--gold)" }}>{totalShards.toLocaleString(dateLocale())}</div>
         <div style={{ fontSize: 12, color: "var(--text-dim)", marginTop: 8, background: "rgba(201,140,40,0.1)", borderRadius: 8, padding: "8px 12px", textAlign: "left" }}>
-          <strong style={{ color: "var(--gold)" }}>Note:</strong> Unlocking a weapon requires 50 named shards specific to that weapon. Subsequent levels can use named or universal shards.
+          <strong style={{ color: "var(--gold)" }}>{tr("Note")}:</strong> {tr("Unlocking a weapon requires 50 named shards specific to that weapon. Subsequent levels can use named or universal shards.")}
         </div>
       </ResultCard>
 
       <button className="btn btn-ghost btn-full" style={{ marginTop: 12 }} onClick={() => setShowTable(t => !t)}>
-        {showTable ? "Hide" : "Show"} Shards Table {showTable ? "▲" : "▼"}
+        {showTable ? tr("Hide Shards Table") : tr("Show Shards Table")} {showTable ? "▲" : "▼"}
       </button>
       {showTable && (
         <div style={{ marginTop: 12, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "2px solid var(--border)" }}>
-                <th style={{ padding: "8px 12px", textAlign: "left", color: "var(--text-dim)" }}>Level</th>
-                <th style={{ padding: "8px 12px", textAlign: "right", color: "var(--text-dim)" }}>Shards</th>
-                <th style={{ padding: "8px 12px", textAlign: "right", color: "var(--text-dim)" }}>Cumulative</th>
+                <th style={{ padding: "8px 12px", textAlign: "left", color: "var(--text-dim)" }}>{tr("Level")}</th>
+                <th style={{ padding: "8px 12px", textAlign: "right", color: "var(--text-dim)" }}>{tr("Shards")}</th>
+                <th style={{ padding: "8px 12px", textAlign: "right", color: "var(--text-dim)" }}>{tr("Cumulative")}</th>
               </tr>
             </thead>
             <tbody>
@@ -5636,32 +5763,32 @@ function DroneCalc() {
     <div>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-body" style={{ background: "linear-gradient(135deg, #2c5f8a 0%, #1a3d5c 100%)", borderRadius: 10, marginBottom: 16, padding: "16px" }}>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>⚙️ Drone Parts Calculator</div>
-          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 4 }}>Drone upgrade parts & battle data needed per level</div>
+          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>⚙️ {tr("Drone Parts Calculator")}</div>
+          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 4 }}>{tr("Drone upgrade parts & battle data needed per level")}</div>
         </div>
-        <LevelSelector label="From Level" value={fromLevel} setValue={setFromLevel} min={1} max={maxLevel} />
-        <LevelSelector label="To Level" value={toLevel} setValue={setToLevel} min={1} max={maxLevel} />
+        <LevelSelector label={tr("From Level")} value={fromLevel} setValue={setFromLevel} min={1} max={maxLevel} />
+        <LevelSelector label={tr("To Level")} value={toLevel} setValue={setToLevel} min={1} max={maxLevel} />
       </div>
 
       <ResultCard>
-        <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 16 }}>Level {safeFrom} → {safeTo}</div>
+        <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 16 }}>{tr("Level")} {safeFrom} → {safeTo}</div>
         <div style={{ display: "flex", gap: 12 }}>
-          <ResultRow icon="⚙️" label="Drone Parts Required" value={fmtNum(parts)} color="#2c5f8a" />
-          <ResultRow icon="📋" label="Battle Data Required" value={fmtNum(xp)} color="#8a5c2c" />
+          <ResultRow icon="⚙️" label={tr("Drone Parts Required")} value={fmtNum(parts)} color="#2c5f8a" />
+          <ResultRow icon="📋" label={tr("Battle Data Required")} value={fmtNum(xp)} color="#8a5c2c" />
         </div>
       </ResultCard>
 
       <button className="btn btn-ghost btn-full" style={{ marginTop: 12 }} onClick={() => setShowTable(t => !t)}>
-        {showTable ? "Hide" : "Show"} Full Table {showTable ? "▲" : "▼"}
+        {showTable ? tr("Hide Full Table") : tr("Show Full Table")} {showTable ? "▲" : "▼"}
       </button>
       {showTable && (
         <div style={{ marginTop: 12, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: "2px solid var(--border)" }}>
-                <th style={{ padding: "6px 8px", textAlign: "left", color: "var(--text-dim)" }}>Lvl</th>
-                <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-dim)" }}>Parts</th>
-                <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-dim)" }}>Battle Data</th>
+                <th style={{ padding: "6px 8px", textAlign: "left", color: "var(--text-dim)" }}>{tr("Lvl")}</th>
+                <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-dim)" }}>{tr("Parts")}</th>
+                <th style={{ padding: "6px 8px", textAlign: "right", color: "var(--text-dim)" }}>{tr("Battle Data")}</th>
               </tr>
             </thead>
             <tbody>
@@ -5670,8 +5797,8 @@ function DroneCalc() {
                 return (
                   <tr key={row[0]} style={{ borderBottom: "1px solid var(--border)", background: inRange ? "rgba(44,95,138,0.1)" : "transparent" }}>
                     <td style={{ padding: "5px 8px", fontWeight: inRange ? 700 : 400 }}>{row[0]}</td>
-                    <td style={{ padding: "5px 8px", textAlign: "right" }}>{row[1].toLocaleString()}</td>
-                    <td style={{ padding: "5px 8px", textAlign: "right", color: "var(--text-dim)" }}>{row[2].toLocaleString()}</td>
+                    <td style={{ padding: "5px 8px", textAlign: "right" }}>{row[1].toLocaleString(dateLocale())}</td>
+                    <td style={{ padding: "5px 8px", textAlign: "right", color: "var(--text-dim)" }}>{row[2].toLocaleString(dateLocale())}</td>
                   </tr>
                 );
               })}
@@ -5745,27 +5872,27 @@ function T11Calc() {
     <div>
       <div className="card" style={{ marginBottom: 16 }}>
         <div className="card-body" style={{ background: "linear-gradient(135deg, #3a2c6b 0%, #1f1840 100%)", borderRadius: 10, marginBottom: 16, padding: "16px" }}>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>🔬 T11 Research Calculator</div>
-          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 4 }}>Armament materials, cores & oil required</div>
+          <div style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>🔬 {tr("T11 Research Calculator")}</div>
+          <div style={{ color: "rgba(255,255,255,0.85)", fontSize: 13, marginTop: 4 }}>{tr("Armament materials, cores & oil required")}</div>
         </div>
 
         <div className="form-group">
-          <label className="form-label">Research Type</label>
+          <label className="form-label">{tr("Research Type")}</label>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {types.map(t => (
               <button key={t} onClick={() => setResearchType(t)} style={{ padding: "10px 8px", border: `2px solid ${researchType === t ? "var(--gold)" : "var(--border)"}`, borderRadius: 8, background: researchType === t ? "rgba(201,140,40,0.1)" : "var(--bg)", cursor: "pointer", fontSize: 13, fontWeight: researchType === t ? 700 : 400, color: researchType === t ? "var(--gold)" : "var(--text-mid)" }}>
-                {t}
+                {tr(t)}
               </button>
             ))}
           </div>
         </div>
 
         <div className="form-group" style={{ marginTop: 12 }}>
-          <label className="form-label">Stage</label>
+          <label className="form-label">{tr("Stage")}</label>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
             {stages.map(s => (
               <button key={s} onClick={() => { setStage(s); setFromPct(0); setToPct(10); }} style={{ padding: "10px 4px", border: `2px solid ${stage === s ? "var(--gold)" : "var(--border)"}`, borderRadius: 8, background: stage === s ? "rgba(201,140,40,0.1)" : "var(--bg)", cursor: "pointer", fontSize: 12, fontWeight: stage === s ? 700 : 400, color: stage === s ? "var(--gold)" : "var(--text-mid)" }}>
-                {s}
+                {tr(s)}
               </button>
             ))}
           </div>
@@ -5773,7 +5900,7 @@ function T11Calc() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 12 }}>
           <div className="form-group">
-            <label className="form-label">From %</label>
+            <label className="form-label">{tr("From %")}</label>
             <div style={{ display: "flex", alignItems: "center", border: "1.5px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--bg)" }}>
               <button onClick={() => { const idx = validPcts.indexOf(fromPct); const nv = validPcts[Math.max(0, idx - 1)]; setFromPct(nv); setDisplayFrom(String(nv)); }} style={{ width: 44, height: 48, border: "none", borderRight: "1px solid var(--border)", background: "var(--surface)", cursor: "pointer", fontSize: 20, color: "var(--text-mid)", flexShrink: 0 }}>−</button>
               <input type="number" value={displayFrom} min={0} max={maxPct}
@@ -5783,7 +5910,7 @@ function T11Calc() {
             </div>
           </div>
           <div className="form-group">
-            <label className="form-label">To %</label>
+            <label className="form-label">{tr("To %")}</label>
             <div style={{ display: "flex", alignItems: "center", border: "1.5px solid var(--border)", borderRadius: 10, overflow: "hidden", background: "var(--bg)" }}>
               <button onClick={() => { const idx = validPcts.indexOf(toPct); const nv = validPcts[Math.max(0, idx - 1)]; setToPct(nv); setDisplayTo(String(nv)); }} style={{ width: 44, height: 48, border: "none", borderRight: "1px solid var(--border)", background: "var(--surface)", cursor: "pointer", fontSize: 20, color: "var(--text-mid)", flexShrink: 0 }}>−</button>
               <input type="number" value={displayTo} min={0} max={maxPct}
@@ -5796,11 +5923,11 @@ function T11Calc() {
       </div>
 
       <ResultCard>
-        <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 16 }}>{researchType} ({stage}): {safeFrom}% → {safeTo}%</div>
+        <div style={{ fontSize: 13, color: "var(--text-dim)", marginBottom: 16 }}>{tr(researchType)} ({tr(stage)}): {safeFrom}% → {safeTo}%</div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
-          <ResultRow icon="💎" label="Armament Materials" value={fmtNum(mat)} color="#5b8dd9" />
-          <ResultRow icon="🧊" label="Armament Cores" value={fmtNum(cores)} color="#6bb5c8" />
-          <ResultRow icon="🛢️" label="Oil" value={oil > 0 ? fmtNum(oil) : "—"} color="#c8a86b" />
+          <ResultRow icon="💎" label={tr("Armament Materials")} value={fmtNum(mat)} color="#5b8dd9" />
+          <ResultRow icon="🧊" label={tr("Armament Cores")} value={fmtNum(cores)} color="#6bb5c8" />
+          <ResultRow icon="🛢️" label={tr("Oil")} value={oil > 0 ? fmtNum(oil) : "—"} color="#c8a86b" />
         </div>
       </ResultCard>
     </div>
@@ -5810,14 +5937,14 @@ function T11Calc() {
 function CalculatorsPage() {
   const [tab, setTab] = useState("shards");
   const tabs = [
-    { id: "shards", icon: "⚔️", label: "Weapon\nShards" },
-    { id: "drone", icon: "⚙️", label: "Drone\nParts" },
-    { id: "t11", icon: "🔬", label: "T11\nResearch" },
+    { id: "shards", icon: "⚔️", label: tr("Weapon\nShards") },
+    { id: "drone", icon: "⚙️", label: tr("Drone\nParts") },
+    { id: "t11", icon: "🔬", label: tr("T11\nResearch") },
   ];
   return (
     <div>
-      <h1 className="section-title">Calculators</h1>
-      <p className="section-sub">Planning tools for Last War upgrades</p>
+      <h1 className="section-title">{tr("Calculators")}</h1>
+      <p className="section-sub">{tr("Planning tools for Last War upgrades")}</p>
 
       {/* Pretty tab bar like management */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 24 }}>
