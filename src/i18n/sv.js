@@ -369,6 +369,8 @@ export default {
   "Sign-ups are open — tap to close": "Anmälan är öppen — tryck för att stänga",
   "Sign-ups are closed — tap to open": "Anmälan är stängd — tryck för att öppna",
   "Time Slots": "Tider",
+  "Includes 1 “Any” sign-up in every time. Players who picked two times count in both.": "Inkluderar 1 ”Valfri”-anmälan i varje tid. Spelare som valt två tider räknas i båda.",
+  "Includes {n} “Any” sign-ups in every time. Players who picked two times count in both.": "Inkluderar {n} ”Valfri”-anmälningar i varje tid. Spelare som valt två tider räknas i båda.",
   "Time slot distribution": "Fördelning av tider",
   "Add a member sign-up": "Lägg till en medlems anmälan",
   "Save teams": "Spara lag",

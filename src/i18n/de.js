@@ -369,6 +369,8 @@ export default {
   "Sign-ups are open — tap to close": "Anmeldung ist offen – zum Schließen tippen",
   "Sign-ups are closed — tap to open": "Anmeldung ist geschlossen – zum Öffnen tippen",
   "Time Slots": "Zeitfenster",
+  "Includes 1 “Any” sign-up in every time. Players who picked two times count in both.": "Enthält 1 „Egal“-Anmeldung bei jeder Uhrzeit. Wer zwei Uhrzeiten gewählt hat, zählt bei beiden.",
+  "Includes {n} “Any” sign-ups in every time. Players who picked two times count in both.": "Enthält {n} „Egal“-Anmeldungen bei jeder Uhrzeit. Wer zwei Uhrzeiten gewählt hat, zählt bei beiden.",
   "Time slot distribution": "Verteilung der Zeitfenster",
   "Add a member sign-up": "Anmeldung für ein Mitglied hinzufügen",
   "Save teams": "Teams speichern",

@@ -369,6 +369,8 @@ export default {
   "Sign-ups are open — tap to close": "Iscrizioni aperte — tocca per chiudere",
   "Sign-ups are closed — tap to open": "Iscrizioni chiuse — tocca per aprire",
   "Time Slots": "Fasce orarie",
+  "Includes 1 “Any” sign-up in every time. Players who picked two times count in both.": "Include 1 iscrizione “Qualsiasi” in ogni orario. Chi ha scelto due orari conta in entrambi.",
+  "Includes {n} “Any” sign-ups in every time. Players who picked two times count in both.": "Include {n} iscrizioni “Qualsiasi” in ogni orario. Chi ha scelto due orari conta in entrambi.",
   "Time slot distribution": "Distribuzione fasce orarie",
   "Add a member sign-up": "Aggiungi iscrizione di un membro",
   "Save teams": "Salva team",

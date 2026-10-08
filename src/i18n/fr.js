@@ -369,6 +369,8 @@ export default {
   "Sign-ups are open — tap to close": "Inscriptions ouvertes — touchez pour fermer",
   "Sign-ups are closed — tap to open": "Inscriptions fermées — touchez pour ouvrir",
   "Time Slots": "Créneaux",
+  "Includes 1 “Any” sign-up in every time. Players who picked two times count in both.": "Inclut 1 inscription « Peu importe » dans chaque horaire. Les joueurs ayant choisi deux horaires comptent dans les deux.",
+  "Includes {n} “Any” sign-ups in every time. Players who picked two times count in both.": "Inclut {n} inscriptions « Peu importe » dans chaque horaire. Les joueurs ayant choisi deux horaires comptent dans les deux.",
   "Time slot distribution": "Répartition des créneaux",
   "Add a member sign-up": "Ajouter l'inscription d'un membre",
   "Save teams": "Enregistrer les équipes",

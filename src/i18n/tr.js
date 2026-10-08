@@ -369,6 +369,8 @@ export default {
   "Sign-ups are open — tap to close": "Kayıtlar açık — kapatmak için dokun",
   "Sign-ups are closed — tap to open": "Kayıtlar kapalı — açmak için dokun",
   "Time Slots": "Saat dilimleri",
+  "Includes 1 “Any” sign-up in every time. Players who picked two times count in both.": "Her saate 1 “Farketmez” kaydı dahildir. İki saat seçen oyuncular ikisinde de sayılır.",
+  "Includes {n} “Any” sign-ups in every time. Players who picked two times count in both.": "Her saate {n} “Farketmez” kaydı dahildir. İki saat seçen oyuncular ikisinde de sayılır.",
   "Time slot distribution": "Saat dilimi dağılımı",
   "Add a member sign-up": "Bir üye kaydı ekle",
   "Save teams": "Takımları kaydet",
