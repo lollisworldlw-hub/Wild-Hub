@@ -1,6 +1,7 @@
 // Translates text people type into the app (battle plans, train goals) with DeepL.
 // Each translation is saved in the "translations" table, so a text is only sent to DeepL once per language.
 // Needs the DEEPL_API_KEY secret (Supabase → Edge Functions → Secrets).
+// Also used by ZpA Hub.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const CORS = {
@@ -9,7 +10,7 @@ const CORS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 // App language → DeepL target language
-const TARGETS: Record<string, string> = { en: "EN-US", de: "DE", fr: "FR", it: "IT", sv: "SV", tr: "TR" };
+const TARGETS: Record<string, string> = { en: "EN-US", de: "DE", fr: "FR", it: "IT", sv: "SV", tr: "TR", pl: "PL" };
 const MAX_TEXTS = 100;
 const MAX_CHARS = 20000;
 
